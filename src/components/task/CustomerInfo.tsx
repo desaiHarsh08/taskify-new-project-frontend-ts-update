@@ -1,0 +1,79 @@
+import { Customer } from "@/lib/customer";
+import Task from "@/lib/task";
+import { fetchCustomerById } from "@/services/customer-apis";
+import { useEffect, useState } from "react";
+import Button from "../ui/Button";
+import Modal from "../ui/Modal";
+import EditCustomerForm from "../customers/EditCustomerForm";
+import { useSelector } from "react-redux";
+import { selectRefetch } from "@/app/slices/refetchSlice";
+
+type CustomerInfoProps = {
+  task: Task;
+};
+
+export default function CustomerInfo({ task }: CustomerInfoProps) {
+  const refectFlag = useSelector(selectRefetch);
+
+  const [openModal, setOpenModal] = useState(false);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetchCustomerById(task.customerId);
+        setCustomer(response);
+      } catch (error) {
+        console.log(error);
+        // alert("Unable to fetch customer!");
+      }
+    })();
+  }, [task.customerId, refectFlag]);
+
+  return (
+    <div>
+      <ul
+        className="px-2 d-flex flex-column gap-2"
+        style={{ listStyle: "none" }}
+      >
+        <li className="d-flex gap-2">
+          <p style={{ width: "149px" }}>Name:</p>
+          <p>{customer?.customerName}</p>
+        </li>
+        <li className="d-flex gap-2">
+          <p style={{ width: "149px" }}>Person of Contact:</p>
+          <p>{customer?.personOfContact}</p>
+        </li>
+        <li className="d-flex gap-2">
+          <p style={{ width: "149px" }}>Phone:</p>
+          <p>{customer?.phone}</p>
+        </li>
+        <li className="d-flex gap-2">
+          <p style={{ minWidth: "149px" }}>Address:</p>
+          <p>{customer?.address}</p>
+        </li>
+        <li className="d-flex gap-2">
+          <p style={{ width: "149px" }}>City:</p>
+          <p>{customer?.city}</p>
+        </li>
+        <li className="d-flex gap-2">
+          <p style={{ width: "149px" }}>Pincode:</p>
+          <p>{customer?.pincode}</p>
+        </li>
+      </ul>
+      <Button variant={"success"} onClick={() => setOpenModal(true)}>
+        Edit
+      </Button>
+      <Modal
+        open={openModal}
+        onHide={() => setOpenModal(false)}
+        heading={`Edit: ${customer?.customerName}`}
+        backdrop
+        centered
+        size="lg"
+      >
+        {customer && <EditCustomerForm customer={customer} />}
+      </Modal>
+    </div>
+  );
+}
