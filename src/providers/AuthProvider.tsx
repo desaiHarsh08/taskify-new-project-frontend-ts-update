@@ -25,8 +25,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [displayFlag, setDisplayFlag] = useState(false);
-
+  const [displayFlag, setDisplayFlag] = useState(false);
 
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -39,9 +38,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     setTimeout(() => {
-        setDisplayFlag(true);
-    }, 2000)
-  })
+      setDisplayFlag(true);
+    }, 2000);
+  });
 
   const logout = useCallback(() => {
     setAccessToken(null);
@@ -177,7 +176,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={contextValue}>
-      {console.log(user, accessToken)}
       {user != null && accessToken != null && displayFlag && children}
     </AuthContext.Provider>
   );

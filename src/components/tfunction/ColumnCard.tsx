@@ -99,14 +99,13 @@ export default function ColumnCard({
       <div>
         <div className="mb-3 d-flex flex-column gap-2">
           <p className="mt-3 my-2">{columnPrototype.name}</p>
-          {columnPrototype.columnType === "FILE" &&
-            column.multipartFiles &&
-            column.multipartFiles?.length > 0 && (
+          {columnPrototype.columnType === "FILE" && (
               <>
                 <input
                   type="file"
                   multiple={columnPrototype.multipleFiles}
                   className="form-control"
+                  onChange={(e) => onColumnChange(columnPrototype, e.target.files)}
                 />
               </>
             )}

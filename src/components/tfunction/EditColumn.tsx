@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {  Field } from "@/lib/task";
+import { Field } from "@/lib/task";
 import { ColumnPrototype } from "@/lib/task-prototype";
 import ColumnCard from "./ColumnCard";
 import { useState } from "react";
-import { updateColumn } from "@/services/column-apis";
+import { updateColumn, uploadFiles } from "@/services/column-apis";
 import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
@@ -39,6 +39,7 @@ export default function EditColumn({
           newCol.textValue = value as string;
         } else if (columnPrototype.columnType === "FILE") {
           console.log("todo");
+          newCol.multipartFiles = value as File[];
         } else {
           newCol.numberValue = value as number;
         }
@@ -58,6 +59,13 @@ export default function EditColumn({
       try {
         const response = await updateColumn(tmpField.columns[i]);
         console.log(response);
+        if (tmpField.columns[i].multipartFiles) {
+          const resUpload = await uploadFiles(
+            response,
+            tmpField.columns[i].multipartFiles as File[]
+          );
+          console.log(resUpload);
+        }
       } catch (error) {
         console.log(error);
       }
