@@ -67,9 +67,9 @@ export default function AllTasks() {
       setAllTasks([response]);
     } catch (error) {
       console.log(error);
-    //   if (error.response.data.statusCode === 404) {
-    //     alert(error.response.data.message);
-    //   }
+      //   if (error.response.data.statusCode === 404) {
+      //     alert(error.response.data.message);
+      //   }
     } finally {
       dispatch(toggleLoading());
     }
@@ -122,7 +122,9 @@ export default function AllTasks() {
       <Pagination
         pageNumber={pageData.pageNumber}
         totalPages={pageData.totalPages}
-        onPageClick={getTasks}
+        setPageData={setPageData}
+        pageSize={pageData.pageSize}
+        totalRecords={pageData.totalRecords}
       />
     </div>
   );

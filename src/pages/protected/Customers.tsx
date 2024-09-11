@@ -31,7 +31,7 @@ export default function Customers() {
 
   useEffect(() => {
     getCustomersData(pageData.pageNumber);
-  }, [refetchFlag]);
+  }, [refetchFlag, pageData.pageNumber]);
 
   const getCustomersData = async (page: number) => {
     if (
@@ -142,7 +142,7 @@ export default function Customers() {
           <Pagination
             pageNumber={pageData.pageNumber}
             totalPages={pageData.totalPages}
-            onPageClick={getCustomersData}
+              setPageData={setPageData}
           />
         </div>
       </div>

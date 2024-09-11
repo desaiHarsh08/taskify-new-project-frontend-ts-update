@@ -3,7 +3,6 @@ import MonthlyTaskStats from "@/components/taskboard/MonthlyTaskStats";
 import OverallTaskStats from "@/components/taskboard/OverallTaskStats";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import AllTasks from "./AllTasks";
 import TaskList from "@/components/all-tasks/TaskList";
 import Task from "@/lib/task";
 import {
@@ -14,13 +13,14 @@ import {
   fetchTaskByAbbreviation,
   fetchTaskByPriority,
 } from "@/services/task-apis";
-import TaskPrototype from "@/lib/task-prototype";
+// import TaskPrototype from "@/lib/task-prototype";
 import Button from "@/components/ui/Button";
+import Pagination from "@/components/global/Pagination";
 
 export default function TaskBoard() {
   const refetchFlag = useSelector(selectRefetch);
 
-  const [taskPrototypes, setTaskPrototypes] = useState<TaskPrototype[]>([]);
+//   const [taskPrototypes, setTaskPrototypes] = useState<TaskPrototype[]>([]);
   const [pageData, setPageData] = useState({
     pageNumber: 1,
     pageSize: 0,
@@ -42,7 +42,7 @@ export default function TaskBoard() {
   useEffect(() => {
     const selectedTab = tabs.find((tab) => tab.isSelected);
     if (selectedTab?.tabLabel === "All Tasks") {
-      getAllTasks();
+      getAllTasks(pageData.pageNumber);
     } else if (selectedTab?.tabLabel === "Overdue Tasks") {
       getOverdueTasks(pageData.pageNumber);
     } else if (
@@ -56,13 +56,19 @@ export default function TaskBoard() {
     } else if (selectedTab?.tabLabel === "Closed") {
       getClosedTasks(pageData.pageNumber);
     }
-  }, [refetchFlag, tabs]);
+  }, [refetchFlag, tabs, pageData.pageNumber]);
 
-  const getAllTasks = async () => {
+  const getAllTasks = async (pageNumber: number) => {
     try {
-      const response = await fetchAllTasks(pageData.pageNumber);
+      const response = await fetchAllTasks(pageNumber);
       console.log(response);
       setAllTasks(response.content);
+      setPageData({
+        pageNumber: pageNumber,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords
+      });
     } catch (error) {
       console.log(error);
     }
@@ -70,9 +76,15 @@ export default function TaskBoard() {
 
   const getTasksByPriority = async (priority: string, page: number) => {
     try {
-      const response = await fetchTaskByPriority(pageData.pageNumber, priority);
+      const response = await fetchTaskByPriority(page, priority);
       console.log(response);
       setAllTasks(response.content);
+      setPageData({
+        pageNumber: page,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords
+      });
     } catch (error) {
       console.log(error);
     }
@@ -80,9 +92,15 @@ export default function TaskBoard() {
 
   const getPendingTasks = async (page: number) => {
     try {
-      const response = await fetchPendingTasks(pageData.pageNumber);
+      const response = await fetchPendingTasks(page);
       console.log(response);
       setAllTasks(response.content);
+      setPageData({
+        pageNumber: page,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords
+      });
     } catch (error) {
       console.log(error);
     }
@@ -90,9 +108,15 @@ export default function TaskBoard() {
 
   const getOverdueTasks = async (page: number) => {
     try {
-      const response = await fetchOverdueTasks(pageData.pageNumber);
+      const response = await fetchOverdueTasks(page);
       console.log(response);
       setAllTasks(response.content);
+      setPageData({
+        pageNumber: page,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords
+      });
     } catch (error) {
       console.log(error);
     }
@@ -100,9 +124,15 @@ export default function TaskBoard() {
 
   const getClosedTasks = async (page: number) => {
     try {
-      const response = await fetchClosedTasks(pageData.pageNumber);
+      const response = await fetchClosedTasks(page);
       console.log(response);
       setAllTasks(response.content);
+      setPageData({
+        pageNumber: page,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords
+      });
     } catch (error) {
       console.log(error);
     }
@@ -125,7 +155,7 @@ export default function TaskBoard() {
 
     const selectedTab = tabs.find((tab) => tab.isSelected);
     if (selectedTab?.tabLabel === "All Tasks") {
-      getAllTasks();
+      getAllTasks(1);
     } else if (selectedTab?.tabLabel === "Overdue Tasks") {
       getOverdueTasks(pageData.pageNumber);
     } else if (
@@ -209,6 +239,7 @@ export default function TaskBoard() {
               onSelectTask={() => {}}
               selectedTasks={[]}
             />
+            <Pagination setPageData={setPageData} pageNumber={pageData.pageNumber} totalPages={pageData.totalPages} pageSize={pageData.pageSize} totalRecords={pageData.totalRecords}  />
           </div>
           {/* {window.innerWidth > 767 ? <MonthlyTaskStats /> : <AllTasks />} */}
         </div>

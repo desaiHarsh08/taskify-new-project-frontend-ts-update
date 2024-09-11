@@ -46,7 +46,7 @@ export default function ParentCompanies() {
 
   useEffect(() => {
     getParentCompanies(1);
-  }, []);
+  }, [pageData.pageNumber]);
 
   const getParentCompanies = async (page: number) => {
     try {
@@ -167,7 +167,10 @@ export default function ParentCompanies() {
           <Pagination
             pageNumber={pageData.pageNumber}
             totalPages={pageData.totalPages}
-            onPageClick={getParentCompanies}
+            setPageData={setPageData}
+            pageSize={pageData.pageSize}
+            totalRecords={pageData.totalRecords}
+
           />
         </div>
       </div>

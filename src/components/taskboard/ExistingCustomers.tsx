@@ -77,7 +77,7 @@ export default function ExistingCustomers({
         setCustomers(data.content);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [pageData.pageNumber]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -198,14 +198,8 @@ export default function ExistingCustomers({
         </div>
       </div>
       <Pagination
-        onPageClick={() => {
-          if (pageData.totalPages <= pageData.pageNumber + 1) {
-            setPageData((prev) => ({
-              ...prev,
-              pageNumber: pageData.pageNumber + 1,
-            }));
-          }
-        }}
+        setPageData={setPageData}
+        totalRecords={pageData.totalRecords}
         pageNumber={pageData.pageNumber}
         totalPages={pageData.totalPages}
         pageSize={pageData.pageSize}

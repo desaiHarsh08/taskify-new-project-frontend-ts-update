@@ -5,13 +5,20 @@ type PaginationProps = {
   pageSize?: number;
   totalPages: number;
   totalRecords?: number;
-  onPageClick: (page: number) => void;
+  setPageData: React.Dispatch<
+    React.SetStateAction<{
+      pageNumber: number;
+      pageSize: number;
+      totalPages: number;
+      totalRecords: number;
+    }>
+  >;
 };
 
 export default function Pagination({
   pageNumber,
   totalPages,
-  onPageClick,
+  setPageData,
 }: PaginationProps) {
   console.log("pagination", pageNumber, totalPages);
 
@@ -21,7 +28,9 @@ export default function Pagination({
         <Button
           key={index}
           outline={pageNumber !== index + 1}
-          onClick={() => onPageClick(index + 1)}
+          onClick={() =>
+            setPageData((prev) => ({ ...prev, pageNumber: index + 1 }))
+          }
         >
           {index + 1}
         </Button>

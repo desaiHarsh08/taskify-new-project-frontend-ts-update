@@ -6,7 +6,7 @@ import { SiTask } from "react-icons/si";
 import CreateNewTask from "./CreateNewTask";
 import { useEffect, useState } from "react";
 import { TaskStats } from "@/lib/task-stats";
-import { fetchOverdueTasks, fetchStats } from "@/services/task-apis";
+import { fetchStats } from "@/services/task-apis";
 import MyToast from "../ui/MyToast";
 import { RiAlarmWarningFill } from "react-icons/ri";
 

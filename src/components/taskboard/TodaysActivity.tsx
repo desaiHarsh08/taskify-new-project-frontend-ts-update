@@ -20,8 +20,8 @@ export default function TodaysActivity() {
   });
 
   useEffect(() => {
-    getLogs(1);
-  }, [refectFlag]);
+    getLogs(pageData.pageNumber);
+  }, [refectFlag, pageData.pageNumber]);
 
   const getLogs = async (pageNumber: number) => {
     const d = new Date();
@@ -73,7 +73,7 @@ export default function TodaysActivity() {
           ))}
         </div>
         <Pagination
-          onPageClick={getLogs}
+          setPageData={setPageData}
           pageNumber={pageData.pageNumber}
           totalPages={pageData.totalPages}
           pageSize={pageData.pageSize}
