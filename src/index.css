@@ -9,7 +9,7 @@ p {
 }
 
 .stat-card {
-    width: 25% !important;
+    width: 20% !important;
 }
 
 #overall-task-stats {
@@ -19,14 +19,15 @@ p {
 
 #taskboard-area {
     display: flex;
+    flex-direction: column;
 }
 
 #taskboard-a1 {
-    width: 75%;
+    width: 100%;
 }
 
 #taskboard-a2 {
-    width: 25%;
+    width: 100%;
 }
 
 #todays-activity {
@@ -75,7 +76,7 @@ p {
 
 @media (max-width: 767px) {
     #taskboard-area {
-        flex-direction: column;
+        /* flex-direction: column; */
         overflow: auto;
     }
 

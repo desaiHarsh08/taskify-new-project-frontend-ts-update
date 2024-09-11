@@ -89,7 +89,7 @@ export default function TaskRow({
       </p>
       <p className="border-end text-center" style={{ width: "13%" }}>
         <Link
-          to={`${task.id}`}
+          to={`/home/tasks/${task.id}`}
           className="btn btn-primary py-1"
           style={{ fontSize: "14px" }}
         >

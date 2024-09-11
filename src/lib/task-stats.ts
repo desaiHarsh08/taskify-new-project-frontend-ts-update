@@ -3,4 +3,5 @@ export interface TaskStats {
     tasks: number;
     newPumpTask: number;
     serviceTask: number;
+    overdueTasks: number;
 }

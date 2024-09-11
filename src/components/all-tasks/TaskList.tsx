@@ -13,7 +13,7 @@ const columns = [
   "Task Id",
   "Type",
   "Priority",
-  "Created At",
+  "Last Edited",
   "Status",
   "Finished",
   "Actions",

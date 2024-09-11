@@ -6,14 +6,37 @@ type FunctionsListProps = {
 };
 
 export default function FunctionsList({ task }: FunctionsListProps) {
+  console.log(task.functions);
   return (
-    <div
-      id="function-container"
-      className="d-flex flex-column align-items-center gap-4 py-4 overflow-auto pb-5"
-    >
-      {task.functions?.map((fn, fnIndex) => (
-        <FunctionCard key={`fn-${fnIndex}`} fn={fn} />
-      ))}
+    <div id="function-container" className="py-4 overflow-auto pb-5">
+      <div className="d-flex border bg-light fw-medium text-center" style={{minWidth: "948px"}}>
+        <p className="border-end py-1" style={{ width: "7%" }}>
+          Sr. No.
+        </p>
+        <p className="border-end py-1" style={{ width: "15.5%" }}>
+          Function
+        </p>
+        <p className="border-end py-1" style={{ width: "15.5%" }}>
+          Department
+        </p>
+        <p className="border-end py-1" style={{ width: "15.5%" }}>
+          Created At
+        </p>
+        <p className="border-end py-1" style={{ width: "15.5%" }}>
+          Due Date
+        </p>
+        <p className="border-end py-1" style={{ width: "15.5%" }}>
+          Last Edited
+        </p>
+        <p className="py-1" style={{ width: "15.5%" }}>
+          Closed At
+        </p>
+      </div>
+      <div className="w-100 border" style={{minWidth: "948px"}}>
+        {task.functions?.map((fn, fnIndex) => (
+          <FunctionCard key={`fn-${fnIndex}`} fn={fn} fnIndex={fnIndex} />
+        ))}
+      </div>
     </div>
   );
 }

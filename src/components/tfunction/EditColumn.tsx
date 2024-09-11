@@ -18,6 +18,7 @@ export default function EditColumn({
   field,
   setOpenEditModal,
 }: EditColumnProps) {
+  console.log("field:", field);
   const dispatch = useDispatch();
 
   const [tmpField, setTmpField] = useState(field);
@@ -36,6 +37,9 @@ export default function EditColumn({
           columnPrototype.columnType === "DATE" ||
           columnPrototype.columnType === "STRING"
         ) {
+
+            console.log('to set date:', );
+
           newCol.textValue = value as string;
         } else if (columnPrototype.columnType === "FILE") {
           console.log("todo");

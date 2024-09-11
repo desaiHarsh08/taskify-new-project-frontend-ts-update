@@ -6,8 +6,9 @@ import { SiTask } from "react-icons/si";
 import CreateNewTask from "./CreateNewTask";
 import { useEffect, useState } from "react";
 import { TaskStats } from "@/lib/task-stats";
-import { fetchStats } from "@/services/task-apis";
+import { fetchOverdueTasks, fetchStats } from "@/services/task-apis";
 import MyToast from "../ui/MyToast";
+import { RiAlarmWarningFill } from "react-icons/ri";
 
 export default function OverallTaskStats() {
   const [stats, setStats] = useState<TaskStats | null>(null);
@@ -15,16 +16,19 @@ export default function OverallTaskStats() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetchStats();
-        console.log(response);
-        setStats(response);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+    getTaskStats();
   }, []);
+
+  const getTaskStats = async () => {
+    try {
+      const response = await fetchStats();
+      console.log(response);
+      setStats(response);
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
 
   return (
     <div id="overall-task-stats">
@@ -45,19 +49,6 @@ export default function OverallTaskStats() {
         </div>
       </div>
       <div className={`card stat-card`}>
-        <div className="card-header">Customers Stats</div>
-        <div className="card-body">
-          <p className="card-text fs-5 d-flex gap-2 align-items-center">
-            <IoIosPeople />
-            <span className="fw-semibold">Customers</span>
-          </p>
-          <p className="card-text">Since June 12, 2024</p>
-        </div>
-        <div className="px-3 pb-3">
-          <span className="fs-4">{stats?.customers}</span>
-        </div>
-      </div>
-      <div className={`card stat-card`}>
         <div className="card-header">Task Stats</div>
         <div className="card-body">
           <p className="card-text fs-5 d-flex gap-2 align-items-center">
@@ -74,6 +65,19 @@ export default function OverallTaskStats() {
         <div className="card-header">Task Stats</div>
         <div className="card-body">
           <p className="card-text fs-5 d-flex gap-2 align-items-center">
+            <RiAlarmWarningFill className="text-danger" />
+            <span className="fw-semibold text-danger">Overdue!</span>
+          </p>
+          <p className="card-text">Since June 12, 2024</p>
+          <div className="px-3 pt-4">
+            <span className="fs-4 text-danger">{stats?.overdueTasks}</span>
+          </div>
+        </div>
+      </div>
+      <div className={`card stat-card`}>
+        <div className="card-header">Task Stats</div>
+        <div className="card-body">
+          <p className="card-text fs-5 d-flex gap-2 align-items-center">
             <FiType />
             <span className="fw-semibold">Task Type</span>
           </p>
@@ -82,7 +86,19 @@ export default function OverallTaskStats() {
           </p>
         </div>
       </div>
-
+      <div className={`card stat-card`}>
+        <div className="card-header">Customers Stats</div>
+        <div className="card-body">
+          <p className="card-text fs-5 d-flex gap-2 align-items-center">
+            <IoIosPeople />
+            <span className="fw-semibold">Customers</span>
+          </p>
+          <p className="card-text">Since June 12, 2024</p>
+        </div>
+        <div className="px-3 pb-3">
+          <span className="fs-4">{stats?.customers}</span>
+        </div>
+      </div>
       <MyToast
         show={showToast}
         message={message}

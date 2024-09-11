@@ -13,6 +13,8 @@ export default function ColumnCard({
   column,
   onColumnChange,
 }: ColumnCardProps) {
+  console.log(column);
+
   const [columnPrototype, setColumnPrototype] =
     useState<ColumnPrototype | null>(null);
 
@@ -93,6 +95,16 @@ export default function ColumnCard({
     }
   };
 
+  const dateFormat = (date: string) => {
+    console.log(date);
+    const tmpDate = new Date(date);
+    const formattedDate = `${tmpDate.getDate().toString().padStart(2, "0")}/${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}/${tmpDate.getFullYear()}`;
+
+    console.log(date, "formatted date:", formattedDate);
+
+    return formattedDate;
+  };
+
   return (
     columnPrototype &&
     column && (
@@ -100,15 +112,17 @@ export default function ColumnCard({
         <div className="mb-3 d-flex flex-column gap-2">
           <p className="mt-3 my-2">{columnPrototype.name}</p>
           {columnPrototype.columnType === "FILE" && (
-              <>
-                <input
-                  type="file"
-                  multiple={columnPrototype.multipleFiles}
-                  className="form-control"
-                  onChange={(e) => onColumnChange(columnPrototype, e.target.files)}
-                />
-              </>
-            )}
+            <>
+              <input
+                type="file"
+                multiple={columnPrototype.multipleFiles}
+                className="form-control"
+                onChange={(e) =>
+                  onColumnChange(columnPrototype, e.target.files)
+                }
+              />
+            </>
+          )}
 
           {column.fileDirectoryPaths &&
             column.fileDirectoryPaths.map((filePath) => {
@@ -147,7 +161,7 @@ export default function ColumnCard({
             <input
               type="date"
               className="form-control"
-              value={column.textValue as string}
+              value={dateFormat(column.textValue as string)}
               onChange={(e) => onColumnChange(columnPrototype, e.target.value)}
             />
           )}
@@ -167,7 +181,11 @@ export default function ColumnCard({
                 <input
                   type="text"
                   className="form-control"
-                  value={column.textValue as string}
+                  value={
+                    column.textValue
+                      ? dateFormat(column.textValue as string)
+                      : ""
+                  }
                   onChange={(e) =>
                     onColumnChange(columnPrototype, e.target.value)
                   }

@@ -37,6 +37,31 @@ export const fetchTaskById = async (taskId: number): Promise<Task> => {
     return response.data;
 }
 
+export const fetchTaskByPriority = async (page: number, priority: string): Promise<PageResponse<Task>> => {
+    const response = await API.get(`/api/tasks/priority/${priority}?page=${page}`);
+    console.log(response);
+    return response.data;
+}
+
+export const fetchOverdueTasks = async (page: number): Promise<PageResponse<Task>> => {
+    // /api/tasks/overdue?page=1
+    const response = await API.get(`/api/tasks/overdue?page=${page}`);
+    console.log(response);
+    return response.data;
+}
+
+export const fetchPendingTasks = async (page: number): Promise<PageResponse<Task>> => {
+    const response = await API.get(`/api/tasks/is-closed?page=${page}&isClosed=${false}`);
+    console.log(response);
+    return response.data;
+}
+
+export const fetchClosedTasks = async (page: number): Promise<PageResponse<Task>> => {
+    const response = await API.get(`/api/tasks/is-closed?page=${page}&isClosed=${true}`);
+    console.log(response);
+    return response.data;
+}
+
 export const deleteTask = async (taskId: number): Promise<Task> => {
     const response = await API.delete(`/api/tasks/${taskId}`);
     return response.data;
