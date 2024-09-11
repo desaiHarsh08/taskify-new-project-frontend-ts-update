@@ -13,6 +13,7 @@ const columns = [
   "Task Id",
   "Type",
   "Priority",
+  "Department",
   "Last Edited",
   "Status",
   "Finished",
@@ -25,7 +26,7 @@ export default function TaskList({
   onSelectTask,
 }: TaskListProps) {
   const tableColumns = columns.map((column, index) => {
-    let columnWidth = { width: "13%" };
+    let columnWidth = { width: "11.25%" };
     if (index === 0) {
       columnWidth = { width: "3%" };
     } else if (index === 1) {

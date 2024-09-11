@@ -1,4 +1,4 @@
-import Task from "@/lib/task";
+import Task, { TFunction } from "@/lib/task";
 import { getFormattedDate } from "@/utils/helpers";
 import { Link } from "react-router-dom";
 
@@ -6,6 +6,8 @@ import styles from "@/styles/TaskRow.module.css";
 import { useEffect, useState } from "react";
 import TaskPrototype from "@/lib/task-prototype";
 import { fetchTaskPrototypeById } from "@/services/task-prototype-apis";
+
+import { fetchFunctionPrototypeById } from "@/services/function-prototype-apis";
 
 type TaskRowProps = {
   task: Task;
@@ -23,6 +25,8 @@ export default function TaskRow({
     null
   );
 
+  const [department, setDepartment] = useState("");
+
   useEffect(() => {
     (async () => {
       try {
@@ -34,7 +38,26 @@ export default function TaskRow({
         console.log("Unable to fetch the data");
       }
     })();
+
+    console.log("task:", task)
+    const fnUnderProcess = task.functions?.find((fn) => fn.isClosed != true);
+    console.log(fnUnderProcess);
+    if (fnUnderProcess) {
+        getDepartment(fnUnderProcess as TFunction);
+    }
   }, [task.taskPrototypeId]);
+
+  const getDepartment = async (fn: TFunction) => {
+    try {
+      const response = await fetchFunctionPrototypeById(
+        fn.functionPrototypeId as number
+      );
+      console.log("response for fnproto:", response);
+      setDepartment(response.department);
+    } catch (error) {
+        console.log(error)
+    }
+  };
 
   return (
     <div
@@ -55,13 +78,13 @@ export default function TaskRow({
       <p className="border-end text-center" style={{ width: "7%" }}>
         {taskIndex + 1}.
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         #{task.taskAbbreviation}
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         {taskPrototype?.taskType}
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         {task.priorityType === "HIGH" && (
           <span className="badge bg-danger">{task.priorityType}</span>
         )}
@@ -74,20 +97,23 @@ export default function TaskRow({
           </span>
         )}
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
+        {department}
+      </p>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         {getFormattedDate(task.createdDate as Date)}
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         {!task.isClosed ? (
           <span className="badge bg-warning">IN_PROGRESS</span>
         ) : (
           <span className="badge bg-success">CLOSED</span>
         )}
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         {task.isClosed ? getFormattedDate(task.closedDate as Date) : "-"}
       </p>
-      <p className="border-end text-center" style={{ width: "13%" }}>
+      <p className="border-end text-center" style={{ width: "11.25%" }}>
         <Link
           to={`/home/tasks/${task.id}`}
           className="btn btn-primary py-1"
