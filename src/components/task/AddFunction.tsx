@@ -26,10 +26,7 @@ type AddFunctionProps = {
   getTask: () => Promise<void>;
 };
 
-export default function AddFunction({
-  task,
-  setTask,
-}: AddFunctionProps) {
+export default function AddFunction({ task, setTask }: AddFunctionProps) {
   const { user } = useAuth();
 
   const dispatch = useDispatch();
@@ -131,7 +128,9 @@ export default function AddFunction({
     console.log("newFunction: ", newFunction);
     const tmpNewFn = { ...newFunction };
     console.log("tmpNewFn:", tmpNewFn);
-    tmpNewFn.dueDate = tmpNewFn.dueDate + "T00:00:00";
+    const tmpDueDate = new Date(tmpNewFn.dueDate);
+    const formattedDueDate = `${tmpDueDate.getFullYear()}-${(tmpDueDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDueDate.getDate().toString().padStart(2, "0")}`;
+    tmpNewFn.dueDate = formattedDueDate + "T00:00:00";
     dispatch(toggleLoading());
     try {
       const response = await createFunction(tmpNewFn as TFunction);
