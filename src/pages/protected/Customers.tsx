@@ -3,16 +3,13 @@ import CustomersList from "@/components/customers/CustomersList";
 import { useEffect, useState } from "react";
 import { Customer } from "@/lib/customer";
 import {
-  fetchCustomers,
-  fetchCustomersByEmailCityOrState,
+  searchCustomer,
 } from "@/services/customer-apis";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleLoading } from "@/app/slices/loadingSlice";
+import { useSelector } from "react-redux";
 import Pagination from "@/components/global/Pagination";
 import { selectRefetch } from "@/app/slices/refetchSlice";
 
 export default function Customers() {
-  const dispatch = useDispatch();
 
   const refetchFlag = useSelector(selectRefetch);
 
@@ -22,10 +19,11 @@ export default function Customers() {
     totalPages: 0,
     totalRecords: 0,
   });
-  const [filters, setFilters] = useState({
-    email: "",
-    city: "",
-    state: "",
+  const [searchQuery, setSearchQuery] = useState({
+    customerName: "",
+    phone: "",
+    personOfContact: "",
+    pincode: "",
   });
   const [customers, setCustomers] = useState<Customer[]>([]);
 
@@ -33,55 +31,50 @@ export default function Customers() {
     getCustomersData(pageData.pageNumber);
   }, [refetchFlag, pageData.pageNumber]);
 
-  const getCustomersData = async (page: number) => {
-    if (
-      filters.email.trim() === "" &&
-      filters.city.trim() === "" &&
-      filters.state.trim() === ""
-    ) {
-      try {
-        dispatch(toggleLoading());
-        const response = await fetchCustomers(page);
-        setCustomers(response.content);
-        setPageData({
-          pageNumber: page,
-          pageSize: response.pageSize,
-          totalPages: response.totalPages,
-          totalRecords: response.totatRecords,
-        });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(toggleLoading());
-      }
-    } else {
-      try {
-        dispatch(toggleLoading());
-        const response = await fetchCustomersByEmailCityOrState(
-          page,
-          filters.email,
-          filters.city,
-          filters.state
-        );
-        dispatch(toggleLoading());
-        setCustomers(response.content);
-        setPageData({
-          pageNumber: page,
-          pageSize: response.pageSize,
-          totalPages: response.totalPages,
-          totalRecords: response.totatRecords,
-        });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(toggleLoading());
-      }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setSearchQuery((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const getCustomersData = async (pageNumber: number) => {
+    try {
+      const response = await searchCustomer(
+        pageNumber,
+        searchQuery.pincode,
+        searchQuery.phone,
+        searchQuery.customerName,
+        searchQuery.personOfContact
+      );
+      setPageData({
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords,
+      });
+      setCustomers(response.content);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleReset = () => {
+    setSearchQuery({
+      customerName: "",
+      phone: "",
+      personOfContact: "",
+      pincode: "",
+    });
+    getCustomersData(1);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setPageData((prev) => ({ ...prev, pageNumber: 1 })); // Reset page number when new filters are applied
+    setPageData((prev) => ({ ...prev, pageNumber: 1 }));
     getCustomersData(1);
   };
 
@@ -92,47 +85,56 @@ export default function Customers() {
         <p>View all of our customers from here!</p>
       </div>
       <div id="customer-filters" className="py-3 ">
-        <form className="d-flex gap-2" onSubmit={handleSubmit}>
+        <form className="d-flex gap-2 mb-3" onSubmit={handleSubmit}>
           <div className="mb-3">
             <input
-              type="email"
-              className="form-control py-1"
-              id="email"
-              value={filters.email}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, email: e.target.value }))
-              }
+              type="search"
+              className="form-control"
+              name="customerName"
+              aria-describedby="emailHelp"
+              placeholder="type name..."
+              value={searchQuery.customerName}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-3">
             <input
-              type="text"
-              className="form-control py-1"
-              id="city"
-              placeholder="type city..."
-              value={filters.city}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, city: e.target.value }))
-              }
+              type="search"
+              className="form-control"
+              aria-describedby="emailHelp"
+              placeholder="type poc..."
+              name="personOfContact"
+              value={searchQuery.personOfContact}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-3">
             <input
-              type="text"
-              className="form-control py-1"
-              id="state"
-              placeholder="type state..."
-              value={filters.state}
-              onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  state: e.target.value.toUpperCase(),
-                }))
-              }
+              type="search"
+              className="form-control"
+              aria-describedby="emailHelp"
+              placeholder="type phone..."
+              name="phone"
+              value={searchQuery.phone}
+              onChange={handleChange}
             />
           </div>
           <div className="mb-3">
-            <Button variant="info">Search</Button>
+            <input
+              type="search"
+              className="form-control"
+              aria-describedby="emailHelp"
+              placeholder="type pincode..."
+              name="pincode"
+              value={searchQuery.pincode}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3 d-flex gap-2">
+            <Button>Search</Button>
+            <Button type="button" variant="secondary"  onClick={handleReset}>
+              Reset
+            </Button>
           </div>
         </form>
       </div>
@@ -142,7 +144,7 @@ export default function Customers() {
           <Pagination
             pageNumber={pageData.pageNumber}
             totalPages={pageData.totalPages}
-              setPageData={setPageData}
+            setPageData={setPageData}
           />
         </div>
       </div>

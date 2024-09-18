@@ -22,9 +22,9 @@ export default function ParentCompaniesList({
   parentCompanies,
 }: ParentCompaniesListProps) {
   return (
-    <div className="border overflow-auto" style={{ height: "90%" }}>
+    <div className="overflow-auto mb-3 w-100" style={{ height: "90%" }}>
       <div
-        className="d-flex bg-light border-bottom"
+        className="d-flex bg-light border-bottom border"
         style={{ width: "1464px" }}
       >
         {columns.map((column, columnIndex) => {
@@ -45,7 +45,11 @@ export default function ParentCompaniesList({
           );
         })}
       </div>
-      <div id="parent-rows" className="border-bottom overflow-auto">
+      <div
+        id="parent-rows"
+        className="overflow-auto border"
+        style={{ maxHeight: "500px", width: "1464px" }}
+      >
         {parentCompanies.map((parentCompany, parentIndex) => (
           <ParentCompanyRow
             key={`parent-${parentIndex}`}

@@ -19,3 +19,18 @@ export const createParentCompany = async (parentCompany: ParentCompany): Promise
     console.log(response)
     return response.data;
 }
+
+export const updateParentCompany = async (parentCompany: ParentCompany): Promise<ParentCompany> => {
+    const response = await API.put(`/api/parent-companies/${parentCompany.id}`, parentCompany);
+    console.log(response)
+    return response.data;
+}
+
+export const filterParentCompanies = async (
+    page: number, city: string, state: string, pincode: string, companyName: string
+): Promise<PageResponse<ParentCompany>> => {
+    console.log(`/api/parent-companies/filters?page=${page}&city=${city}&state=${state}&pincode=${pincode}&companyName=${companyName}`)
+    const response = await API.get(`/api/parent-companies/filters?page=${page}&city=${city}&state=${state}&pincode=${pincode}&companyName=${companyName}`);
+    console.log(response)
+    return response.data;
+}

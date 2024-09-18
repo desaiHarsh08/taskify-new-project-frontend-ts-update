@@ -3,7 +3,12 @@ import styles from "@/styles/ParentCompanyRow.module.css";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { FaEdit } from "react-icons/fa";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { useState } from "react";
+import AddParentCompanyForm from "./AddParentCompanyForm";
+import { useDispatch } from "react-redux";
+import { toggleLoading } from "@/app/slices/loadingSlice";
+import { toggleRefetch } from "@/app/slices/refetchSlice";
+import { updateParentCompany } from "@/services/parent-companies-apis";
 
 type ParentCompanyRowProps = {
   parentCompany: ParentCompany;
@@ -14,6 +19,36 @@ export default function ParentCompanyRow({
   parentCompany,
   parentIndex,
 }: ParentCompanyRowProps) {
+  const dispatch = useDispatch();
+
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [tmpParentCompany, setTmpParentCompany] = useState(parentCompany);
+
+  const handleChangeParentCompany = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setTmpParentCompany((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(toggleLoading());
+    try {
+      const response = await updateParentCompany(tmpParentCompany);
+      console.log(response);
+      dispatch(toggleRefetch());
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(toggleLoading());
+    }
+  };
+
   return (
     <div className={`${styles["parent-row-card"]} d-flex border-bottom w-100`}>
       <p
@@ -79,27 +114,25 @@ export default function ParentCompanyRow({
         className="border-end text-center d-flex justify-content-center align-items-center gap-2 py-3"
         style={{ width: "12%" }}
       >
-        <Button type="button" size="sm" onClick={() => {}}>
+        <Button type="button" size="sm" onClick={() => setOpenEditModal(true)}>
           <FaEdit />
         </Button>
         <Modal
-          open={false}
-          onHide={() => {}}
+          open={openEditModal}
+          onHide={() => setOpenEditModal(false)}
           backdrop
           centered
           size="lg"
           heading={`Edit: ${parentCompany.companyName}`}
         >
-            kjkj
-          {/* <EditCustomerForm customer={customer} /> */}
+          <AddParentCompanyForm
+            newParentCompany={tmpParentCompany}
+            onNewParentCompanyChange={handleChangeParentCompany}
+            onSubmit={handleSubmit}
+          />
         </Modal>
 
-        <Button
-          type="button"
-          size="sm"
-          variant="danger"
-          onClick={() => {}}
-        >
+        {/* <Button type="button" size="sm" variant="danger" onClick={() => {}}>
           <MdOutlineDeleteOutline />
         </Button>
         <Modal
@@ -110,9 +143,7 @@ export default function ParentCompanyRow({
           centered
           heading={`Delete: ${parentCompany.companyName}`}
         >
-          {/* <DeleteCustomerForm /> */}
-          ljlllj
-        </Modal>
+        </Modal> */}
       </p>
     </div>
   );

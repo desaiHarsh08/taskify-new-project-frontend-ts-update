@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { toggleLoading } from "@/app/slices/loadingSlice";
-import {  toggleRefetch } from "@/app/slices/refetchSlice";
+import { selectRefetch, toggleRefetch } from "@/app/slices/refetchSlice";
 import Pagination from "@/components/global/Pagination";
 import AddParentCompanyForm from "@/components/parent-companies/AddParentCompanyForm";
 import ParentCompaniesList from "@/components/parent-companies/ParentCompaniesList";
@@ -9,23 +9,27 @@ import Modal from "@/components/ui/Modal";
 import { ParentCompany } from "@/lib/parent-company";
 import {
   createParentCompany,
-  fetchParentCompanies,
+  filterParentCompanies,
 } from "@/services/parent-companies-apis";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function ParentCompanies() {
   const dispatch = useDispatch();
 
-//   const refetchFlag = useSelector(selectRefetch);
+  const refetchFlag = useSelector(selectRefetch);
 
   const [openAddModal, setOpenAddModal] = useState(false);
-//   const [openEditModal, setOpenEditModal] = useState(false);
-//   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
   const [parentCompanies, setParentCompanies] = useState<ParentCompany[] | []>(
     []
   );
-
+  const [filters, setFilters] = useState({
+    city: "",
+    state: "",
+    pincode: "",
+    companyName: "",
+  });
   const [newParentCompany, setNewParentCompany] = useState<ParentCompany>({
     companyName: "",
     address: "",
@@ -46,11 +50,17 @@ export default function ParentCompanies() {
 
   useEffect(() => {
     getParentCompanies(1);
-  }, [pageData.pageNumber]);
+  }, [pageData.pageNumber, refetchFlag]);
 
   const getParentCompanies = async (page: number) => {
     try {
-      const response = await fetchParentCompanies(page);
+      const response = await filterParentCompanies(
+        page,
+        filters.city,
+        filters.state,
+        filters.pincode,
+        filters.companyName
+      );
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -88,6 +98,21 @@ export default function ParentCompanies() {
     }
   };
 
+  const handleReset = () => {
+    setFilters({
+      city: "",
+      state: "",
+      pincode: "",
+      companyName: "",
+    });
+    getParentCompanies(1);
+  };
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    getParentCompanies(1);
+  };
+
   return (
     <div className="p-3 h-100">
       <div className="page-intro">
@@ -95,10 +120,7 @@ export default function ParentCompanies() {
         <p>View all of our parent-companies from here!</p>
       </div>
       <div id="parent-filters" className="py-3 ">
-        <form
-          className="d-flex gap-2"
-          // onSubmit={handleSubmit}
-        >
+        <form className="d-flex gap-2" onSubmit={handleSearch}>
           <div>
             <Button type="button" onClick={() => setOpenAddModal(true)}>
               Add
@@ -120,44 +142,55 @@ export default function ParentCompanies() {
           </div>
           <div className="mb-3">
             <input
-              type="email"
+              type="text"
               className="form-control py-1"
-              id="email"
-              //   value={filters.email}
-              //   onChange={(e) =>
-              //     setFilters((prev) => ({ ...prev, email: e.target.value }))
-              //   }
+              value={filters.companyName}
+              placeholder="type company..."
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, companyName: e.target.value }))
+              }
             />
           </div>
           <div className="mb-3">
             <input
               type="text"
               className="form-control py-1"
-              id="city"
               placeholder="type city..."
-              //   value={filters.city}
-              //   onChange={(e) =>
-              //     setFilters((prev) => ({ ...prev, city: e.target.value }))
-              //   }
+              value={filters.city}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, city: e.target.value }))
+              }
             />
           </div>
           <div className="mb-3">
             <input
               type="text"
               className="form-control py-1"
-              id="state"
               placeholder="type state..."
-              //   value={filters.state}
-              //   onChange={(e) =>
-              //     setFilters((prev) => ({
-              //       ...prev,
-              //       state: e.target.value.toUpperCase(),
-              //     }))
-              //   }
+              value={filters.state}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  state: e.target.value,
+                }))
+              }
             />
           </div>
           <div className="mb-3">
+            <input
+              type="text"
+              className="form-control py-1"
+              value={filters.pincode}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, pincode: e.target.value }))
+              }
+            />
+          </div>
+          <div className="mb-3 d-flex gap-2">
             <Button variant="info">Search</Button>
+            <Button type="button" variant="secondary" onClick={handleReset}>
+              Reset
+            </Button>
           </div>
         </form>
       </div>
@@ -170,7 +203,6 @@ export default function ParentCompanies() {
             setPageData={setPageData}
             pageSize={pageData.pageSize}
             totalRecords={pageData.totalRecords}
-
           />
         </div>
       </div>
