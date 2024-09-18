@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 type SelectFunctionProps = {
   taskPrototype: TaskPrototype;
+  selectedFunctionPrototype: FunctionPrototype | null;
   setSelectedFunctionPrototype: React.Dispatch<
     React.SetStateAction<FunctionPrototype | null>
   >;
@@ -25,10 +26,11 @@ export default function SelectFunction({
   handleModalNavigate,
   onFunctionDefaultSet,
   selectedDepartment,
+  selectedFunctionPrototype,
 }: SelectFunctionProps) {
   useEffect(() => {
     console.log(selectedDepartment);
-  }, [selectedDepartment]);
+  }, [selectedDepartment, selectedFunctionPrototype]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTitle = event.target.value;
@@ -48,8 +50,11 @@ export default function SelectFunction({
     >
       <div>
         <p className="fs-5 mb-3">Select the function</p>
+        {/* {console.log(selectedFunctionPrototype)}
+        {console.log(taskPrototype.functionPrototypes)} */}
         <select
           onChange={handleChange}
+          value={selectedFunctionPrototype?.title}
           className="form-select"
           aria-label="Default select example"
         >

@@ -209,14 +209,16 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           size="lg"
           heading="Select Department"
         >
-          <SelectDepartment
+          {taskPrototype && <SelectDepartment
             backBtn={false}
             onNavigateContinueModal={() =>
               handleModalNavigate("selectFunction")
             }
             selectedDepartment={selectDepartment}
             setSelectedDepartment={setselectDepartment}
-          />
+            taskPrototype={taskPrototype}
+            setSelectedFunctionPrototype={setSelectedFunctionPrototype}
+          />}
         </Modal>
         <Modal
           open={openModal.selectFunction}
@@ -226,10 +228,11 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           heading="Add Function"
           size="lg"
         >
-          {taskPrototype && (
+          {taskPrototype && selectedFunctionPrototype && (
             <SelectFunction
               selectedDepartment={selectDepartment}
               taskPrototype={taskPrototype}
+              selectedFunctionPrototype={selectedFunctionPrototype}
               setSelectedFunctionPrototype={setSelectedFunctionPrototype}
               handleModalNavigate={handleModalNavigate}
               onFunctionDefaultSet={handleFunctionDefaultSet}

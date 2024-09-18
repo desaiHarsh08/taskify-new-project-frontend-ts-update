@@ -1,5 +1,6 @@
 import DepartmentType from "@/lib/department-type";
 import Button from "../ui/Button";
+import TaskPrototype, { FunctionPrototype } from "@/lib/task-prototype";
 
 type SelectDepartmentProps = {
   selectedDepartment: DepartmentType;
@@ -7,6 +8,10 @@ type SelectDepartmentProps = {
   onNavigateBackModal?: () => void; // Define the keys in the type
   onNavigateContinueModal: () => void; // Define the keys in the type
   backBtn?: boolean;
+  setSelectedFunctionPrototype: React.Dispatch<
+    React.SetStateAction<FunctionPrototype | null>
+  >;
+  taskPrototype: TaskPrototype | null | undefined;
 };
 
 const departments = [
@@ -24,11 +29,9 @@ export default function SelectDepartment({
   onNavigateBackModal,
   onNavigateContinueModal,
   backBtn = true,
+  taskPrototype,
+  setSelectedFunctionPrototype,
 }: SelectDepartmentProps) {
-  //   useEffect(() => {
-  //     // setSelectedDepartment(selectedDepartment);
-  //   }, [selectedDepartment]);
-
   return (
     <div
       style={{ height: "300px" }}
@@ -38,9 +41,15 @@ export default function SelectDepartment({
         <p className="my-2 mb-3">Select Department to forward the task</p>
         <select
           value={selectedDepartment}
-          onChange={(e) =>
-            setSelectedDepartment(e.target.value as DepartmentType)
-          }
+          onChange={(e) => {
+            setSelectedDepartment(e.target.value as DepartmentType);
+            const fnPrototypeByDept = taskPrototype?.functionPrototypes.filter(
+              (ele) => ele.department === e.target.value
+            );
+            if (fnPrototypeByDept) {
+              setSelectedFunctionPrototype(fnPrototypeByDept[0]);
+            }
+          }}
           className="form-select"
           aria-label="Default select example"
         >
