@@ -17,10 +17,24 @@ import {
 import Button from "@/components/ui/Button";
 import Pagination from "@/components/global/Pagination";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export default function TaskBoard() {
   const refetchFlag = useSelector(selectRefetch);
 
-//   const [taskPrototypes, setTaskPrototypes] = useState<TaskPrototype[]>([]);
   const [pageData, setPageData] = useState({
     pageNumber: 1,
     pageSize: 0,
@@ -67,7 +81,7 @@ export default function TaskBoard() {
         pageNumber: pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords
+        totalRecords: response.totatRecords,
       });
     } catch (error) {
       console.log(error);
@@ -83,7 +97,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords
+        totalRecords: response.totatRecords,
       });
     } catch (error) {
       console.log(error);
@@ -99,7 +113,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords
+        totalRecords: response.totatRecords,
       });
     } catch (error) {
       console.log(error);
@@ -115,7 +129,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords
+        totalRecords: response.totatRecords,
       });
     } catch (error) {
       console.log(error);
@@ -131,7 +145,7 @@ export default function TaskBoard() {
         pageNumber: page,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
-        totalRecords: response.totatRecords
+        totalRecords: response.totatRecords,
       });
     } catch (error) {
       console.log(error);
@@ -189,7 +203,10 @@ export default function TaskBoard() {
           {/* {window.innerWidth > 767 ? <AllTasks /> : <MonthlyTaskStats />} */}
         </div>
         <div id="taskboard-a2">
-          <h3 className="mb-3">This Month (September 2024)</h3>
+          <h3 className="mb-3">
+            This Month ({months[new Date().getMonth()]}{" "}
+            {new Date().getFullYear()})
+          </h3>
           <div className="overflow-y-auto">
             <MonthlyTaskStats />
           </div>
@@ -239,7 +256,13 @@ export default function TaskBoard() {
               onSelectTask={() => {}}
               selectedTasks={[]}
             />
-            <Pagination setPageData={setPageData} pageNumber={pageData.pageNumber} totalPages={pageData.totalPages} pageSize={pageData.pageSize} totalRecords={pageData.totalRecords}  />
+            <Pagination
+              setPageData={setPageData}
+              pageNumber={pageData.pageNumber}
+              totalPages={pageData.totalPages}
+              pageSize={pageData.pageSize}
+              totalRecords={pageData.totalRecords}
+            />
           </div>
           {/* {window.innerWidth > 767 ? <MonthlyTaskStats /> : <AllTasks />} */}
         </div>

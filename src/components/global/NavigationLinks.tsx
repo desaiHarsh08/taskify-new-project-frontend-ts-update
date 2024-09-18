@@ -18,7 +18,7 @@ const links = [
   { path: "add-customer", label: "Add Customer", icon: <FaPeopleGroup /> },
   { path: "search-task", label: "Search Task", icon: <CiSearch /> },
   { path: "report", label: "Report", icon: <TbReportAnalytics /> },
-  { path: "/home", label: "History", icon: <MdWorkHistory /> },
+  { path: "activity-logs", label: "Activity Logs", icon: <MdWorkHistory /> },
   { path: "tasks", label: "All Tasks", icon: <GoWorkflow /> },
   { path: "settings", label: "Settings", icon: <IoSettingsOutline /> },
   { path: "/", label: "Logout", icon: <SlLogout /> },

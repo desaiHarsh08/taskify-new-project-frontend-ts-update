@@ -2,6 +2,7 @@ import { Column } from "@/lib/task";
 import { API } from "@/utils/api";
 
 export const updateColumn = async (column: Column): Promise<Column> => {
+    console.log("Updating column to api:", column);
     const response = await API.put(`/api/columns/${column.id}`, column);
     return response.data;
 }
@@ -11,7 +12,7 @@ export const fetchFile = async (filePath: string): Promise<Blob> => {
         responseType: 'blob'
     });
     console.log("Fetched File Data:", response.data);
-    return new Blob ([response.data]);
+    return new Blob([response.data]);
 }
 
 export const uploadFiles = async (column: Column, files: File[]): Promise<boolean> => {

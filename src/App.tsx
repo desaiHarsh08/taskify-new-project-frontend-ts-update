@@ -14,6 +14,7 @@ import AddTask from "./pages/protected/AddTask";
 import AddCustomer from "./pages/protected/AddCustomer";
 import SearchTask from "./pages/protected/SearchTask";
 import Report from "./pages/protected/Report";
+import ActivityLogs from "./pages/protected/ActivityLogs";
 
 const router = createBrowserRouter([
   { path: "/", element: <Root /> },
@@ -22,8 +23,7 @@ const router = createBrowserRouter([
     element: <HomeLayout />,
     children: [
       { path: "", element: <TaskBoard /> },
-      //   { path: "history", element: <UserHistory /> },
-      //   { path: "taskboard", element: <TaskBoard /> },
+      { path: "activity-logs", element: <ActivityLogs /> },
       {
         path: "tasks",
         element: <Outlet />,

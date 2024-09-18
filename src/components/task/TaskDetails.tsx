@@ -13,7 +13,7 @@ import { selectRefetch } from "@/app/slices/refetchSlice";
 
 type TaskDetailsProps = {
   task: Task;
-  setTask: React.Dispatch<React.SetStateAction<Task>>;
+  setTask: React.Dispatch<React.SetStateAction<Task | null>>;
 };
 
 export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
@@ -140,7 +140,7 @@ export default function TaskDetails({ task, setTask }: TaskDetailsProps) {
             {taskPrototype && !task.isClosed && (
               <TaskActions
                 task={task}
-                setTask={setTask}
+                setTask={setTask as React.Dispatch<React.SetStateAction<Task>>}
                 taskPrototype={taskPrototype}
               />
             )}

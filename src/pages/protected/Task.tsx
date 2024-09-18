@@ -1,4 +1,4 @@
-import { toggleLoading } from "@/app/slices/loadingSlice";
+import { selectLoading, toggleLoading } from "@/app/slices/loadingSlice";
 import { selectRefetch } from "@/app/slices/refetchSlice";
 import AddFunction from "@/components/task/AddFunction";
 import FunctionsList from "@/components/task/FunctionsList";
@@ -14,49 +14,56 @@ export default function Task() {
 
   const { taskId } = useParams();
 
+  const loadingVisibility = useSelector(selectLoading);
   const refectFlag = useSelector(selectRefetch);
 
   //   console.log("taskId:", taskId);
 
-  const [task, setTask] = useState<TaskLib>({
-    taskPrototypeId: null,
-    priorityType: "NORMAL",
-    createdByUserId: null,
-    assignedToUserId: null,
-    customerId: -1,
-    pumpType: null,
-    pumpManufacturer: null,
-    specifications: null,
-    requirements: null,
-    problemDescription: null,
-  });
+  const [task, setTask] = useState<TaskLib | null>(null);
 
   useEffect(() => {
-    (async () => {
-      if (taskId) {
-        dispatch(toggleLoading());
-        try {
-          const response = await fetchTaskById(Number(taskId));
-          console.log("task: ", response);
-          setTask(response);
-        } catch (error) {
-          console.log(error);
-        } finally {
-          dispatch(toggleLoading());
-        }
-      }
-    })();
-  }, [dispatch, taskId, refectFlag]);
+    if (taskId) {
+      getTask();
+    }
+    console.log("refetchFlag:", refectFlag);
+  }, [taskId, refectFlag]);
+
+  const getTask = async () => {
+    dispatch(toggleLoading());
+    try {
+      const response = await fetchTaskById(Number(taskId));
+      console.log("task: ", response);
+      setTask(response);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(toggleLoading());
+    }
+  };
 
   return (
     taskId &&
     task && (
-      <div id="task-comp" className="px-3 py-3 h-100 d-flex gap-2 overflow-auto">
-        <div style={{ width: window.innerWidth < 640 ? "100%" : "65%", minHeight: "500px" }}>
+      <div
+        id="task-comp"
+        className="px-3 py-3 h-100 d-flex gap-2 overflow-auto"
+      >
+        <div
+          style={{
+            width: window.innerWidth < 640 ? "100%" : "65%",
+            minHeight: "500px",
+          }}
+        >
           <div className="d-flex gap-2 align-items-center">
             <h2>Functions</h2>
-            {task.taskPrototypeId && (
-              <AddFunction task={task} setTask={setTask} />
+            {task && task.taskPrototypeId && (
+              <AddFunction
+                task={task}
+                setTask={
+                  setTask as React.Dispatch<React.SetStateAction<TaskLib>>
+                }
+                getTask={getTask}
+              />
             )}
           </div>
           <FunctionsList task={task} />
@@ -66,7 +73,7 @@ export default function Task() {
           className="card h-100"
           style={{ width: window.innerWidth < 640 ? "100%" : "35%" }}
         >
-          <TaskDetails task={task} setTask={setTask} />
+          {task && <TaskDetails task={task} setTask={setTask} />}
         </div>
       </div>
     )

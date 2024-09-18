@@ -8,6 +8,7 @@ export interface Column {
     fieldId?: number | null | undefined;
     numberValue: number | null;
     textValue: string | null;
+    dateValue: string | null;
     booleanValue: boolean | null;
     fileDirectoryPaths?: string[];
     multipartFiles?: File[] | null

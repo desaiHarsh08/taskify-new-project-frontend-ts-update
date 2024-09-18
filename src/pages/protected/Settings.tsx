@@ -34,6 +34,7 @@ export default function Settings() {
               onClick={() => handleTabSelected(tab.label)}
               variant="secondary"
               outline={!tab.isSelected}
+              disabled={tab.label === "Task Prototype"}
             >
               {tab.label}
             </Button>

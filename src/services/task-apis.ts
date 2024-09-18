@@ -11,6 +11,7 @@ export const fetchTaskPrototypes = async (page: number): Promise<PageResponse<Ta
 }
 
 export const createTask = async (newTask: Task): Promise<Task> => {
+    console.log("Given new task :", newTask);
     const response = await API.post(`/api/tasks`, newTask);
     return response.data;
 }

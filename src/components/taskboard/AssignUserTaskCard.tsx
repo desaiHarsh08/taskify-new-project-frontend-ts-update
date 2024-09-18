@@ -19,6 +19,8 @@ export default function AssignUserTaskCard({
   const handleUserClick = (givenUser: User) => {
     setTask((prev) => ({ ...prev, assignedToUserId: user.id }));
     setAssignedUser(givenUser);
+
+    console.log("assigning to user: ", givenUser);
   };
 
   return (

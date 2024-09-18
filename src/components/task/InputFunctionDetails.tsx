@@ -6,7 +6,7 @@ import {
 } from "@/lib/task-prototype";
 import Button from "../ui/Button";
 import FieldCard from "./FieldCard";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type InputFunctionDetailsProps = {
   newFunction: TFunction;
@@ -16,6 +16,10 @@ type InputFunctionDetailsProps = {
     modalKey: "assignTask" | "selectFunction" | "inputFunctionDetails"
   ) => void;
   onAddFunction: () => Promise<void>;
+  setSelectedFunctionPrototype: React.Dispatch<
+    React.SetStateAction<FunctionPrototype | null>
+  >;
+  handleFunctionDefaultSet: (fnPrototype: FunctionPrototype) => void;
 };
 
 export default function InputFunctionDetails({
@@ -24,8 +28,22 @@ export default function InputFunctionDetails({
   setNewFunction,
   handleModalNavigate,
   onAddFunction,
+  setSelectedFunctionPrototype,
+  handleFunctionDefaultSet,
 }: InputFunctionDetailsProps) {
-  console.log("in input-fn-details, newFunction:", newFunction);
+  const [selectedFieldPrototype, setSelectedFieldPrototype] =
+    useState<FieldPrototype | null>(null);
+
+  useEffect(() => {
+    if (selectedFunctionPrototype?.choice) {
+      setSelectedFieldPrototype(selectedFunctionPrototype.fieldPrototypes[0]);
+      const tmpNewFnPrototype = { ...selectedFunctionPrototype };
+      tmpNewFnPrototype.fieldPrototypes = [
+        selectedFunctionPrototype.fieldPrototypes[0],
+      ];
+      handleFunctionDefaultSet(tmpNewFnPrototype);
+    }
+  }, [selectedFunctionPrototype]);
 
   const handleFunctionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewFunction((prev) => {
@@ -50,7 +68,6 @@ export default function InputFunctionDetails({
     columnPrototype: ColumnPrototype,
     value: unknown
   ) => {
-    console.log("fired!");
     const tmpNewFn = { ...newFunction };
     tmpNewFn.fields = tmpNewFn.fields.map((field) => {
       if (field.fieldPrototypeId === fieldPrototype.id) {
@@ -84,6 +101,15 @@ export default function InputFunctionDetails({
     setNewFunction(tmpNewFn);
   };
 
+  const dateFormat = (date: Date | string | null) => {
+    let d = new Date();
+    if (date) {
+      d = new Date(date);
+    }
+
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+  };
+
   return (
     <div
       className="d-flex flex-column justify-content-between"
@@ -107,21 +133,63 @@ export default function InputFunctionDetails({
               className="form-control"
               name="dueDate"
               id="dueDate"
+              value={newFunction.dueDate && (newFunction.dueDate as string)}
               onChange={handleFunctionChange}
             />
           </div>
-          <div className="d-flex flex-column gap-4 py-3">
-            {selectedFunctionPrototype?.fieldPrototypes.map(
-              (fieldPrototype, fieldPrototypeIndex) => (
-                <FieldCard
-                  key={`fieldPrototype-${fieldPrototypeIndex}`}
-                  fieldPrototype={fieldPrototype}
-                  fieldPrototypeIndex={fieldPrototypeIndex}
-                  newFunction={newFunction}
-                  onFieldChange={handleFieldChange}
-                />
-              )
+          <div className="mb-3 border-bottom">
+            {selectedFunctionPrototype?.choice && (
+              <select
+                className="form-select"
+                value={selectedFieldPrototype?.title}
+                onChange={(e) => {
+                  const fieldProto =
+                    selectedFunctionPrototype.fieldPrototypes.find(
+                      (ele) => ele.title === e.target.value
+                    );
+                  setSelectedFieldPrototype(fieldProto as FieldPrototype);
+
+                  const tmpNewFnPrototype = { ...selectedFunctionPrototype };
+                  tmpNewFnPrototype.fieldPrototypes = [
+                    fieldProto as FieldPrototype,
+                  ];
+                  handleFunctionDefaultSet(tmpNewFnPrototype);
+                }}
+              >
+                {selectedFunctionPrototype.fieldPrototypes.map(
+                  (fieldPrototype, fieldPrototypeIndex) => (
+                    <option
+                      key={`select-field-prototype-${fieldPrototypeIndex}`}
+                      value={fieldPrototype.title}
+                    >
+                      {fieldPrototype.title}
+                    </option>
+                  )
+                )}
+              </select>
             )}
+          </div>
+          <div className="d-flex flex-column gap-4 py-3">
+            {selectedFieldPrototype && selectedFunctionPrototype?.choice && (
+              <FieldCard
+                fieldPrototype={selectedFieldPrototype as FieldPrototype}
+                fieldPrototypeIndex={0}
+                newFunction={newFunction}
+                onFieldChange={handleFieldChange}
+              />
+            )}
+            {!selectedFunctionPrototype?.choice &&
+              selectedFunctionPrototype?.fieldPrototypes.map(
+                (fieldPrototype, fieldPrototypeIndex) => (
+                  <FieldCard
+                    key={`fieldPrototype-${fieldPrototypeIndex}`}
+                    fieldPrototype={fieldPrototype}
+                    fieldPrototypeIndex={fieldPrototypeIndex}
+                    newFunction={newFunction}
+                    onFieldChange={handleFieldChange}
+                  />
+                )
+              )}
           </div>
         </div>
       </div>

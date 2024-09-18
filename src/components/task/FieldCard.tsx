@@ -18,8 +18,16 @@ export default function FieldCard({
   newFunction,
   onFieldChange,
 }: FieldCardProps) {
-  console.log("in input-field-card, newFunction:", newFunction);
-  console.log("in input-field-card, fieldPrototype:", fieldPrototype);
+
+  const dateFormat = (date: Date | string | null) => {
+    let d = new Date();
+    if (date) {
+      d = new Date(date);
+    }
+
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+  };
+
   return (
     <div className="card">
       <div className="card-header fw-semibold">
@@ -57,7 +65,7 @@ export default function FieldCard({
                   value={
                     newFunction.fields[fieldPrototypeIndex].columns[
                       columnPrototypeIndex
-                    ].textValue || ""
+                    ]?.dateValue || dateFormat(null)
                   }
                   onChange={(e) =>
                     onFieldChange(
@@ -76,9 +84,9 @@ export default function FieldCard({
                       className="form-control"
                       rows={3}
                       value={
-                        newFunction.fields[fieldPrototypeIndex].columns[
+                        (newFunction.fields[fieldPrototypeIndex].columns[
                           columnPrototypeIndex
-                        ].textValue as string
+                        ]?.textValue as string) || ""
                       }
                       onChange={(e) =>
                         onFieldChange(
@@ -93,9 +101,9 @@ export default function FieldCard({
                       type="text"
                       className="form-control"
                       value={
-                        newFunction.fields[fieldPrototypeIndex].columns[
+                        (newFunction.fields[fieldPrototypeIndex].columns[
                           columnPrototypeIndex
-                        ].textValue as string
+                        ]?.textValue as string)
                       }
                       onChange={(e) =>
                         onFieldChange(
@@ -116,9 +124,9 @@ export default function FieldCard({
                     type="checkbox"
                     role="switch"
                     checked={
-                      newFunction.fields[fieldPrototypeIndex].columns[
+                      (newFunction.fields[fieldPrototypeIndex].columns[
                         columnPrototypeIndex
-                      ].booleanValue as boolean
+                      ]?.booleanValue as boolean)
                     }
                     onChange={(e) =>
                       onFieldChange(

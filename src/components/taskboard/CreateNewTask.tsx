@@ -17,6 +17,8 @@ import { createCustomer } from "@/services/customer-apis";
 import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
+import DepartmentType from "@/lib/department-type";
+import SelectDepartment from "./SelectDepartment";
 
 type CreateNewTaskProps = {
   setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,6 +45,8 @@ export default function CreateNewTask({
     problemDescription: "",
   });
   const [assignedUser, setAssignedUser] = useState<User | null>(user);
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<DepartmentType>("QUOTATION");
   const [customerDetails, setCustomerDetails] = useState<Customer>({
     customerName: "",
     email: "",
@@ -64,6 +68,7 @@ export default function CreateNewTask({
     assignTask: false,
     selectFunction: false,
     inputFunctionDetails: false,
+    selectDepartment: false,
   });
 
   useEffect(() => {
@@ -100,6 +105,7 @@ export default function CreateNewTask({
 
   const handleCreateTask = async () => {
     dispatch(toggleLoading());
+    setOpenModal((prev) => ({ ...prev, assignTask: false }));
     const tmpTask = { ...newTask };
 
     console.log("Creating customer...", customerDetails);
@@ -108,12 +114,16 @@ export default function CreateNewTask({
     console.log(customerResponse);
 
     tmpTask.customerId = customerResponse.id as number;
+    tmpTask.assignedToUserId = assignedUser?.id as number;
+
+    console.log("tmpTask.assignedToUserId:", tmpTask.assignedToUserId);
 
     // Create the task
     console.log("Creating task...", tmpTask);
+    console.log("assignedUser: ", assignedUser);
     const response = await createTask(tmpTask);
     console.log(response);
-    setOpenModal((prev) => ({ ...prev, assignTask: false }));
+
     dispatch(toggleLoading());
     dispatch(toggleRefetch());
     setShowToast(true);
@@ -198,6 +208,21 @@ export default function CreateNewTask({
         />
       </Modal>
       <Modal
+        open={openModal.selectDepartment}
+        onHide={() => handleModalHide("selectDepartment")}
+        centered
+        backdrop
+        size="lg"
+        heading="Select Department"
+      >
+        <SelectDepartment
+          onNavigateBackModal={() => handleModalNavigate("taskInfo")}
+          onNavigateContinueModal={() => handleModalNavigate("assignTask")}
+          selectedDepartment={selectedDepartment}
+          setSelectedDepartment={setSelectedDepartment}
+        />
+      </Modal>
+      <Modal
         open={openModal.assignTask}
         onHide={() => handleModalHide("assignTask")}
         centered
@@ -207,6 +232,7 @@ export default function CreateNewTask({
       >
         {assignedUser != null && (
           <AssignTask
+            selectedDepartment={selectedDepartment}
             onNavigateModal={handleModalNavigate}
             task={newTask}
             setTask={setNewTask}
@@ -216,8 +242,6 @@ export default function CreateNewTask({
           />
         )}
       </Modal>
-
-      
     </>
   );
 }

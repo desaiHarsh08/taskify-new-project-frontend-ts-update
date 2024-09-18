@@ -14,6 +14,7 @@ type InputTaskInfoProps = {
       customer: boolean;
       taskInfo: boolean;
       assignTask: boolean;
+      selectDepartment: boolean;
     }
   ) => void; // Define the keys in the type
 };
@@ -127,7 +128,10 @@ export default function InputTaskInfo({
         >
           Back
         </Button>
-        <Button type="button" onClick={() => onNavigateModal("assignTask")}>
+        <Button
+          type="button"
+          onClick={() => onNavigateModal("selectDepartment")}
+        >
           Continue
         </Button>
       </div>

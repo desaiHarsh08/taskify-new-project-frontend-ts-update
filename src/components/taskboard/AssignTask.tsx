@@ -2,8 +2,11 @@ import User, { Role } from "@/lib/user";
 import Button from "../ui/Button";
 import AssignUserTaskCard from "./AssignUserTaskCard";
 import React, { useEffect, useState } from "react";
-import { fetchAllUsers } from "@/services/auth-apis";
+import { fetchAllUsers, fetchUsersByDepartment } from "@/services/auth-apis";
 import Task from "@/lib/task";
+import DepartmentType from "@/lib/department-type";
+import { useSelector } from "react-redux";
+import { selectLoading } from "@/app/slices/loadingSlice";
 
 type AssignTaskProps = {
   task: Task;
@@ -11,16 +14,17 @@ type AssignTaskProps = {
   assignedUser: User | null;
   setAssignedUser: React.Dispatch<React.SetStateAction<User | null>>;
   onNavigateModal: (
-    modalKey:
-      | "selectFunction"
-      | "assignTask"
-      | "inputFunctionDetails"
-      | "taskType"
-      | "taskPriority"
-      | "customer"
-      | "taskInfo"
+    modalKey: keyof {
+      taskType: boolean;
+      taskPriority: boolean;
+      customer: boolean;
+      taskInfo: boolean;
+      assignTask: boolean;
+      selectDepartment: boolean;
+    }
   ) => void; // Define the keys in the type
   onContinue: () => Promise<void>;
+  selectedDepartment: DepartmentType;
 };
 
 export default function AssignTask({
@@ -30,7 +34,10 @@ export default function AssignTask({
   onNavigateModal,
   assignedUser,
   onContinue,
+  selectedDepartment,
 }: AssignTaskProps) {
+  const loadingVisibility = useSelector(selectLoading);
+
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTxt, setSearchTxt] = useState("");
@@ -43,7 +50,7 @@ export default function AssignTask({
         setFilteredUsers(data);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [selectedDepartment]);
 
   //   useEffect(() => {}, [filteredUsers]);
 
@@ -106,11 +113,13 @@ export default function AssignTask({
         <Button
           outline
           variant="secondary"
-          onClick={() => onNavigateModal("selectFunction")}
+          onClick={() => onNavigateModal("selectDepartment")}
         >
           Back
         </Button>
-        <Button onClick={onContinue}>Continue</Button>
+        <Button disabled={loadingVisibility} onClick={onContinue}>
+          {loadingVisibility ? "Assigning..." : "Continue"}
+        </Button>
       </div>
     </div>
   );

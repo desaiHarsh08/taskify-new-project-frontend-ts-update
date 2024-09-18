@@ -22,6 +22,14 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
     (async () => {
       try {
         const response = await fetchCustomerById(task.customerId);
+        if (response.birthDate == null) {
+          response.birthDate = dateFormat(null);
+        }
+        if (response.anniversary == null) {
+          response.anniversary = dateFormat(null);
+        }
+
+        console.log("Fetched and auto date:", response)
         setCustomer(response);
       } catch (error) {
         console.log(error);
@@ -29,6 +37,16 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
       }
     })();
   }, [task.customerId, refectFlag]);
+
+  const dateFormat = (date: string | Date | null) => {
+    let tmpDate = new Date();
+    if (date) {
+      tmpDate = new Date(date);
+    }
+    const formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+
+    return formattedDate;
+  };
 
   return (
     <div>
@@ -72,7 +90,9 @@ export default function CustomerInfo({ task }: CustomerInfoProps) {
         centered
         size="lg"
       >
-        {customer && <EditCustomerForm customer={customer} />}
+        {customer && (
+          <EditCustomerForm customer={customer} setOpenModal={setOpenModal} />
+        )}
       </Modal>
     </div>
   );

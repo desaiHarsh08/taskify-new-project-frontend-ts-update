@@ -8,9 +8,13 @@ import { toggleRefetch } from "@/app/slices/refetchSlice";
 
 type EditCustomerFormProps = {
   customer: Customer;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
+export default function EditCustomerForm({
+  customer,
+  setOpenModal,
+}: EditCustomerFormProps) {
   const dispatch = useDispatch();
 
   const [tmpCustomer, setTmpCustomer] = useState({ ...customer });
@@ -23,13 +27,33 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
     setTmpCustomer((prev) => ({ ...prev, [name]: value }));
   };
 
+  const dateFormat = (date: string | Date | null) => {
+    let tmpDate = new Date();
+    if (date) {
+      tmpDate = new Date(date);
+    }
+    const formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+
+    return formattedDate;
+  };
+
   const handleEditCustomer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const customerEdt = { ...tmpCustomer };
+    if (!customerEdt.birthDate?.toString().includes("T00:00:00")) {
+      customerEdt.birthDate = customerEdt.birthDate + "T00:00:00";
+    }
+
+    if (!customerEdt.anniversary?.toString().includes("T00:00:00")) {
+      customerEdt.anniversary = customerEdt.anniversary + "T00:00:00";
+    }
+
+
     dispatch(toggleLoading());
     try {
-      const response = await editCustomer(tmpCustomer);
+      const response = await editCustomer(customerEdt);
       console.log(response);
-      alert("Updated!");
+      setOpenModal(false);
     } catch (error) {
       console.log(error);
     } finally {
@@ -108,6 +132,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
           <textarea
             className="form-control"
             rows={3}
+            name="address"
             value={tmpCustomer.address}
             onChange={handleCustomerChange}
           ></textarea>
@@ -119,7 +144,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
           <input
             type="text"
             className="form-control"
-            name="address"
+            name="city"
             value={tmpCustomer.city}
             onChange={handleCustomerChange}
           />
@@ -144,32 +169,24 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
             type="date"
             className="form-control"
             name="birthDate"
-            value={
-              tmpCustomer.birthDate != null
-                ? (tmpCustomer.birthDate as unknown as string)
-                : ""
-            }
+            value={dateFormat(tmpCustomer.birthDate as string)}
             onChange={handleCustomerChange}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="birthDate" className="form-label">
+          <label htmlFor="anniversary" className="form-label">
             Anniversary
           </label>
           <input
             type="date"
             className="form-control"
-            name="birthDate"
-            value={
-              tmpCustomer.birthDate != null
-                ? (tmpCustomer.anniversary as unknown as string)
-                : ""
-            }
+            name="anniversary"
+            value={dateFormat(tmpCustomer.anniversary as string)}
             onChange={handleCustomerChange}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="birthDate" className="form-label">
+          <label htmlFor="residenceAddress" className="form-label">
             Residence Address
           </label>
           <textarea
@@ -177,6 +194,7 @@ export default function EditCustomerForm({ customer }: EditCustomerFormProps) {
             rows={3}
             value={tmpCustomer.residenceAddress}
             onChange={handleCustomerChange}
+            name="residenceAddress"
           ></textarea>
         </div>
       </div>

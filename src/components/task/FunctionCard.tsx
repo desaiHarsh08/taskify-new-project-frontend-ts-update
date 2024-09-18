@@ -22,7 +22,6 @@ export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
         const response = await fetchFunctionPrototypeById(
           fn.functionPrototypeId as number
         );
-        console.log(response);
         setFunctionPrototype(response);
       } catch (error) {
         console.log(error);
@@ -31,7 +30,7 @@ export default function FunctionCard({ fn, fnIndex }: FunctionCardProps) {
 
     const lastEditedField = fn.fields.find((field) => !field.isClosed);
     setLastEdited(lastEditedField?.lastEdited as Date);
-  }, []);
+  }, [fn.fields, fn.functionPrototypeId]);
 
   return (
     <Link

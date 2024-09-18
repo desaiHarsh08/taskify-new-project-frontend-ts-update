@@ -31,7 +31,7 @@ export default function FieldRow({ field, fieldIndex }: FieldRowProps) {
   return (
     field &&
     fieldPrototype && (
-      <div className="d-flex">
+      <div className="d-flex border-bottom">
         <p
           className="d-flex justify-content-center align-items-center border-end"
           style={{ width: "4%" }}

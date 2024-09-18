@@ -1,13 +1,20 @@
+import DepartmentType from "@/lib/department-type";
 import Button from "../ui/Button";
 import TaskPrototype, { FunctionPrototype } from "@/lib/task-prototype";
+import { useEffect } from "react";
 
 type SelectFunctionProps = {
   taskPrototype: TaskPrototype;
   setSelectedFunctionPrototype: React.Dispatch<
     React.SetStateAction<FunctionPrototype | null>
   >;
+  selectedDepartment: DepartmentType;
   handleModalNavigate: (
-    modalKey: "assignTask" | "selectFunction" | "inputFunctionDetails"
+    modalKey:
+      | "assignTask"
+      | "selectFunction"
+      | "inputFunctionDetails"
+      | "selectDepartment"
   ) => void;
   onFunctionDefaultSet: (fnPrototype: FunctionPrototype) => void;
 };
@@ -17,7 +24,12 @@ export default function SelectFunction({
   setSelectedFunctionPrototype,
   handleModalNavigate,
   onFunctionDefaultSet,
+  selectedDepartment,
 }: SelectFunctionProps) {
+  useEffect(() => {
+    console.log(selectedDepartment);
+  }, [selectedDepartment]);
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTitle = event.target.value;
     const selectedFunction = taskPrototype.functionPrototypes.find(
@@ -41,20 +53,28 @@ export default function SelectFunction({
           className="form-select"
           aria-label="Default select example"
         >
-          {taskPrototype.functionPrototypes.map((fnPrototype) => (
-            <option key={fnPrototype.title} value={fnPrototype.title}>
-              {fnPrototype.department.padEnd(10, " ")}
-              <p> - </p>
-              {fnPrototype.title}
-            </option>
-          ))}
+          {taskPrototype.functionPrototypes.map((fnPrototype) => {
+            if (fnPrototype.department === selectedDepartment) {
+              return (
+                <option key={fnPrototype.title} value={fnPrototype.title}>
+                  {fnPrototype.department.padEnd(10, " ")}
+                  <p> - </p>
+                  {fnPrototype.title}
+                </option>
+              );
+            }
+          })}
         </select>
       </div>
-      <div className="d-flex justify-content-end px-2">
+      <div className="d-flex justify-content-end px-2 gap-2">
         <Button
           type="button"
-          onClick={() => handleModalNavigate("assignTask")}
+          variant="secondary"
+          onClick={() => handleModalNavigate("selectDepartment")}
         >
+          Back
+        </Button>
+        <Button type="button" onClick={() => handleModalNavigate("assignTask")}>
           Next
         </Button>
       </div>

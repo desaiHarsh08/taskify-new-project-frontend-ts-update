@@ -162,7 +162,7 @@ export default function ExistingCustomers({
           <Button>Search</Button>
         </div>
       </form>
-      <div className="border" style={{ height: "500px" }}>
+      <div className="border overflow-auto" style={{ height: "500px" }}>
         <div
           className="d-flex bg-light border-bottom"
           style={{ minWidth: "1108px", overflow: "auto" }}

@@ -2,7 +2,7 @@ import { Field } from "@/lib/task";
 import { API } from "@/utils/api";
 
 export const createField = async (field: Field): Promise<Field> => {
-    const response = await API.put(`/api/fields`, field);
+    const response = await API.post(`/api/fields`, field);
     return response.data;
 }
 

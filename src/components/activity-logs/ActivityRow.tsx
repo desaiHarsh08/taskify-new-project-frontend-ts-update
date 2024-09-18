@@ -1,3 +1,4 @@
+
 import { TaskifyTimeline } from "@/lib/taskify-timeline";
 import User from "@/lib/user";
 import { fetchUserById } from "@/services/auth-apis";
@@ -12,6 +13,7 @@ type ActivityRowProps = {
 export default function ActivityRow({ taskLog, index }: ActivityRowProps) {
     const [user, setUser] = useState<User | null>(null);
 
+    console.log(taskLog)
 
     useEffect(() => {
         fetchUser(taskLog.userId);
@@ -26,7 +28,7 @@ export default function ActivityRow({ taskLog, index }: ActivityRowProps) {
         }
     }
   return (
-    <div className="d-flex border-bottom w-100">
+    <div className="d-flex border-start border-end border-bottom w-100">
       <p
         className="border-end py-2 d-flex justify-content-center align-items-center"
         style={{ width: "10%" }}
@@ -44,6 +46,12 @@ export default function ActivityRow({ taskLog, index }: ActivityRowProps) {
         style={{ width: "22.5%" }}
       >
         {taskLog.resourceType}
+      </p>
+      <p
+        className="border-end py-2 d-flex justify-content-center align-items-center"
+        style={{ width: "22.5%" }}
+      >
+        #{taskLog.taskAbbreviation}
       </p>
       <p
         className="border-end py-2 d-flex justify-content-center align-items-center"

@@ -9,26 +9,35 @@ import Task, { Field, TFunction } from "@/lib/task";
 import InputFunctionDetails from "./InputFunctionDetails";
 import { fetchTaskPrototypeById } from "@/services/task-prototype-apis";
 import { useAuth } from "@/hooks/useAuth";
-import { updateTask } from "@/services/task-apis";
+import { fetchTaskById, updateTask } from "@/services/task-apis";
 import { createFunction } from "@/services/function-apis";
 import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 
 import { uploadFiles } from "@/services/column-apis";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
+import DepartmentType from "@/lib/department-type";
+import SelectDepartment from "../taskboard/SelectDepartment";
 
 type AddFunctionProps = {
   task: Task;
   setTask: React.Dispatch<React.SetStateAction<Task>>;
+  getTask: () => Promise<void>;
 };
 
-export default function AddFunction({ task, setTask }: AddFunctionProps) {
+export default function AddFunction({
+  task,
+  setTask,
+  getTask,
+}: AddFunctionProps) {
   const { user } = useAuth();
 
   const dispatch = useDispatch();
 
+  const [selectDepartment, setselectDepartment] =
+    useState<DepartmentType>("QUOTATION");
   const [taskPrototype, setTaskPrototype] = useState<TaskPrototype | null>();
-  const [assignedUser, setAssignedUser] = useState<User | null>(null);
+  const [assignedUser, setAssignedUser] = useState<User | null>(user);
   const [newFunction, setNewFunction] = useState<TFunction | null>(null);
   const [selectedFunctionPrototype, setSelectedFunctionPrototype] =
     useState<FunctionPrototype | null>(null);
@@ -40,6 +49,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     taskPriority: false,
     customer: false,
     taskInfo: false,
+    selectDepartment: false,
   });
 
   useEffect(() => {
@@ -73,7 +83,6 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     const tmpFields: Field[] = [];
     for (let i = 0; i < fnPrototype.fieldPrototypes.length; i++) {
       const fieldPrototype = fnPrototype.fieldPrototypes[i];
-      console.log("Looping, fieldPrototype: ", fieldPrototype);
       const field: Field = {
         fieldPrototypeId: fieldPrototype.id as number,
         createdByUserId: user?.id,
@@ -86,14 +95,15 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           createdByUserId: user?.id,
           numberValue: 0,
           textValue: "",
+          dateValue: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${new Date().getDate().toString().padStart(2, "0")}`,
           booleanValue: false,
         });
       }
-
-      console.log("looped, fieldPrototype:", fieldPrototype);
       tmpFields.push(field);
     }
     tmpNewFn.fields = [...tmpFields];
+
+    console.log("Default set newFn:", tmpNewFn);
     setNewFunction(tmpNewFn);
   };
 
@@ -164,7 +174,21 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         taskPriority: false,
         customer: false,
         taskInfo: false,
+        selectDepartment: false,
       });
+    }
+
+    try {
+      console.log("before task.fn.length: ", task.functions?.length);
+      const response = await fetchTaskById(Number(task.id));
+      console.log(
+        "after adding fn task: ",
+        response,
+        response.functions?.length
+      );
+      setTask(response);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -173,11 +197,28 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
       <div>
         <Button
           type="button"
-          onClick={() => handleModalNavigate("selectFunction")}
+          onClick={() => handleModalNavigate("selectDepartment")}
           disabled={task.functions?.some((fn) => !fn.isClosed) as boolean}
         >
           Add
         </Button>
+        <Modal
+          open={openModal.selectDepartment}
+          onHide={() => handleModalHide("selectDepartment")}
+          centered
+          backdrop
+          size="lg"
+          heading="Select Department"
+        >
+          <SelectDepartment
+            backBtn={false}
+            onNavigateContinueModal={() =>
+              handleModalNavigate("selectFunction")
+            }
+            selectedDepartment={selectDepartment}
+            setSelectedDepartment={setselectDepartment}
+          />
+        </Modal>
         <Modal
           open={openModal.selectFunction}
           onHide={() => handleModalHide("selectFunction")}
@@ -188,6 +229,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
         >
           {taskPrototype && (
             <SelectFunction
+              selectedDepartment={selectDepartment}
               taskPrototype={taskPrototype}
               setSelectedFunctionPrototype={setSelectedFunctionPrototype}
               handleModalNavigate={handleModalNavigate}
@@ -204,6 +246,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           size="lg"
         >
           <AssignTask
+            selectedDepartment={selectDepartment}
             task={task}
             setTask={setTask}
             assignedUser={assignedUser}
@@ -262,6 +305,8 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
                 React.SetStateAction<TFunction | null>
               >
             }
+            handleFunctionDefaultSet={handleFunctionDefaultSet}
+            setSelectedFunctionPrototype={setSelectedFunctionPrototype}
             handleModalNavigate={handleModalNavigate}
             onAddFunction={handleAddFunction}
           />

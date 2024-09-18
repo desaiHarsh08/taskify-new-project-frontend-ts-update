@@ -9,7 +9,6 @@ export default function MonthlyTaskStats() {
     (async () => {
       try {
         const response = await fetchMonthlyStats();
-        console.log("monthly task stats:", response);
         setMonthlyStats(response);
       } catch (error) {
         console.log(error);
@@ -18,7 +17,10 @@ export default function MonthlyTaskStats() {
   }, []);
 
   return (
-    <div className="d-flex justify-content-evenly border overflow-auto" style={{minWidth: "1464px"}}>
+    <div
+      className="d-flex justify-content-evenly border overflow-auto"
+      style={{ minWidth: "1464px" }}
+    >
       <div className="w-100 border-end">
         <div className="pb-0 pt-2">
           <p className="card-text border-bottom fs-5 d-flex gap-2 align-items-center fw-semibold justify-content-center py-0">

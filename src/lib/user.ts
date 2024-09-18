@@ -3,7 +3,7 @@ import RoleType from "./role-type";
 
 export interface Role {
     id?: number;
-    userId: number;
+    userId?: number;
     roleType: RoleType;
 }
 

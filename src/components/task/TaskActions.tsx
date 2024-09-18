@@ -50,13 +50,13 @@ export default function TaskActions({
           taskPrototype={taskPrototype}
         />
       </Modal>
-      <Button
+      {/* <Button
         type="button"
         variant="danger"
         onClick={() => setOpenDeleteModal(true)}
       >
         Delete
-      </Button>
+      </Button> */}
       <Modal
         open={openDeleteModal}
         onHide={() => setOpenDeleteModal(false)}

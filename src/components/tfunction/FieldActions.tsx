@@ -67,7 +67,7 @@ export default function FieldActions({
         type="button"
         variant="success"
         onClick={() => setOpenEditModal(true)}
-        disabled={field.isClosed}
+        // disabled={field.isClosed}
       >
         <FaEye />
       </Button>

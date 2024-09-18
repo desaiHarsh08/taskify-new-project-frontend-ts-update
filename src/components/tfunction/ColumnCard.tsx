@@ -13,7 +13,7 @@ export default function ColumnCard({
   column,
   onColumnChange,
 }: ColumnCardProps) {
-  console.log(column);
+  console.log("loaded Column:", column);
 
   const [columnPrototype, setColumnPrototype] =
     useState<ColumnPrototype | null>(null);
@@ -24,49 +24,13 @@ export default function ColumnCard({
         const response = await fetchColumnPrototypeById(
           column.columnPrototypeId as number
         );
+        console.log("Column and prototype:", column, response);
         setColumnPrototype(response);
       } catch (error) {
         console.log(error);
       }
     })();
   }, []);
-
-  //   const handleFileView = async (filePath: string) => {
-  //     try {
-  //       const blob = await fetchFile(filePath);
-  //       const url = window.URL.createObjectURL(blob);
-
-  //       // Open the file in a new window or tab
-  //       window.open(url, "_blank");
-
-  //       // Revoke the object URL after use
-  //       setTimeout(() => window.URL.revokeObjectURL(url), 100);
-  //     } catch (error) {
-  //       console.error("Error fetching the file:", error);
-  //     }
-  //   };
-
-  // const handleFileView = async (filePath: string) => {
-  //     try {
-  //       const blob = await fetchFile(filePath);
-
-  //       // Create a URL for the blob
-  //       const url = window.URL.createObjectURL(blob);
-
-  //       // Create an anchor element and trigger a download
-  //       const a = document.createElement("a");
-  //       a.href = url;
-  //       a.download = filePath.split("/").pop(); // Use the file name from the path
-  //       document.body.appendChild(a);
-  //       a.click();
-
-  //       // Remove the anchor element and revoke the object URL
-  //       document.body.removeChild(a);
-  //       window.URL.revokeObjectURL(url);
-  //     } catch (error) {
-  //       console.error("Error fetching the file:", error);
-  //     }
-  //   };
 
   const handleFileView = async (filePath: string) => {
     try {
@@ -95,10 +59,13 @@ export default function ColumnCard({
     }
   };
 
-  const dateFormat = (date: string) => {
+  const dateFormat = (date: string | Date | null) => {
     console.log(date);
-    const tmpDate = new Date(date);
-    const formattedDate = `${tmpDate.getDate().toString().padStart(2, "0")}/${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}/${tmpDate.getFullYear()}`;
+    let tmpDate = new Date();
+    if (date) {
+      tmpDate = new Date(date);
+    }
+    const formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
 
     console.log(date, "formatted date:", formattedDate);
 
@@ -156,43 +123,43 @@ export default function ColumnCard({
                 </div>
               );
             })}
-
+          {/* {console.log(
+            column.columnPrototypeId,
+            columnPrototype.id,
+            columnPrototype.name,
+            columnPrototype.columnType
+          )} */}
           {columnPrototype.columnType === "DATE" && (
             <input
               type="date"
               className="form-control"
-              value={dateFormat(column.textValue as string)}
+              value={dateFormat(column.dateValue as string)}
               onChange={(e) => onColumnChange(columnPrototype, e.target.value)}
             />
           )}
 
-          {columnPrototype.columnType === "STRING" && (
-            <>
-              {columnPrototype.largeText ? (
-                <textarea
-                  className="form-control"
-                  rows={3}
-                  value={column.textValue as string}
-                  onChange={(e) =>
-                    onColumnChange(columnPrototype, e.target.value)
-                  }
-                ></textarea>
-              ) : (
-                <input
-                  type="text"
-                  className="form-control"
-                  value={
-                    column.textValue
-                      ? dateFormat(column.textValue as string)
-                      : ""
-                  }
-                  onChange={(e) =>
-                    onColumnChange(columnPrototype, e.target.value)
-                  }
-                />
-              )}
-            </>
-          )}
+          {columnPrototype.columnType === "STRING" &&
+            columnPrototype.largeText && (
+              <textarea
+                className="form-control"
+                rows={3}
+                value={column.textValue as string}
+                onChange={(e) =>
+                  onColumnChange(columnPrototype, e.target.value)
+                }
+              ></textarea>
+            )}
+          {columnPrototype.columnType === "STRING" &&
+            !columnPrototype.largeText && (
+              <input
+                type="text"
+                className="form-control"
+                value={column.textValue as string}
+                onChange={(e) =>
+                  onColumnChange(columnPrototype, e.target.value)
+                }
+              />
+            )}
 
           {columnPrototype.columnType === "BOOLEAN" && (
             <div className="form-check form-switch">

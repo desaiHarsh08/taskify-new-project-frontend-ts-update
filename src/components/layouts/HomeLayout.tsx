@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { selectLoading } from "@/app/slices/loadingSlice";
 
 import "@/styles/HomeLayout.css";
+import { Modal } from "react-bootstrap";
 // import MyToast from "../ui/MyToast";
 
 export default function HomeLayout() {
@@ -18,7 +19,26 @@ export default function HomeLayout() {
 
   return (
     <AuthProvider>
-      {loadingVisibility && <Loading />}
+      <Modal
+        show={loadingVisibility}
+        centered
+        style={{ width: "100vw", display: "flex", justifyContent: "center" }}
+      >
+        <div className="d-flex justify-content-center">
+          <Modal.Body
+            className="d-flex justify-content-center align-items-center gap-3"
+            style={{ backgroundColor: "transparent", width: "50px" }}
+          >
+            <div>
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <p>Loading...</p>
+          </Modal.Body>
+        </div>
+      </Modal>
+
       <Navbar />
       <main id="home-container" className="d-flex m-0 overflow-hidden">
         <aside className={`sidebar col-md-2 px-0 pt-3 text-white bg-dark `}>

@@ -10,4 +10,5 @@ export interface TaskifyTimeline {
     taskId: number | null;
     functionId: number | null;
     fieldId: number | null;
+    taskAbbreviation: string | null;
 }

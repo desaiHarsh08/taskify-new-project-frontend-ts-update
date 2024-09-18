@@ -1,3 +1,5 @@
+import DepartmentType from "@/lib/department-type";
+import RoleType from "@/lib/role-type";
 import User from "@/lib/user";
 import { API } from "@/utils/api";
 
@@ -7,6 +9,17 @@ type DoLoginParams = {
 }
 export const doLogin = async ({ email, password }: DoLoginParams): Promise<{ accessToken: string, user: User }> => {
     const response = await API.post('/auth/login', { email, password }, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+
+    return response.data;
+}
+
+export const addNewUser = async (newUser: User): Promise<User> => {
+    const response = await API.post('/api/users/add', newUser, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -28,11 +41,24 @@ export const fetchUserById = async (userId: number) => {
     return response.data as User;
 }
 
+export const fetchUsersByDepartmentAndRole = async ({ department, role }: { department: DepartmentType, role: RoleType }) => {
+    const response = await API.get(`/api/users/filters?department=${department}&role=${role}`);
+
+    return response.data as User[];
+}
+
 export const fetchAllUsers = async () => {
     const response = await API.get('/api/users');
     console.log(response.data);
 
     return response.data as User[]
+}
+
+export const fetchUsersByDepartment = async (department: DepartmentType) => {
+    const response = await API.get(`/api/users/department/${department}`);
+    console.log(response.data);
+
+    return response.data as User[];
 }
 
 export const updateUser = async (updatedUser: User) => {

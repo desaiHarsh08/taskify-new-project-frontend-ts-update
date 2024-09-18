@@ -16,10 +16,10 @@ export const fetchCustomersByEmailCityOrState = async (page: number, email: stri
 }
 
 export const searchCustomer = async (
-    page: number, 
-    pincode: string, 
-    phone: string, 
-    customerName: string, 
+    page: number,
+    pincode: string,
+    phone: string,
+    customerName: string,
     personOfContact: string
 ): Promise<PageResponse<Customer>> => {
     const response = await API.get(`/api/customers/search?page=${page}&pincode=${pincode}&phone=${phone}&customerName=${customerName}&personOfContact=${personOfContact}`);
@@ -34,6 +34,7 @@ export const createCustomer = async (newCustomer: Customer): Promise<Customer> =
 }
 
 export const editCustomer = async (customer: Customer): Promise<Customer> => {
+    console.log("Updating customer:", customer);
     const response = await API.put(`/api/customers/${customer.id}`, customer);
 
     return response.data;

@@ -33,13 +33,10 @@ export default function EditColumn({
         const newCol = { ...col };
         if (columnPrototype.columnType === "BOOLEAN") {
           newCol.booleanValue = value as boolean;
-        } else if (
-          columnPrototype.columnType === "DATE" ||
-          columnPrototype.columnType === "STRING"
-        ) {
-
-            console.log('to set date:', );
-
+        } else if (columnPrototype.columnType === "DATE") {
+          console.log("to set date:", value);
+          newCol.dateValue = dateFormat(value as string);
+        } else if (columnPrototype.columnType === "STRING") {
           newCol.textValue = value as string;
         } else if (columnPrototype.columnType === "FILE") {
           console.log("todo");
@@ -57,8 +54,22 @@ export default function EditColumn({
     setTmpField(newTmpField);
   };
 
+  const dateFormat = (date: string | Date | null) => {
+    console.log(date);
+    let tmpDate = new Date();
+    if (date) {
+      tmpDate = new Date(date);
+    }
+    const formattedDate = `${tmpDate.getFullYear()}-${(tmpDate.getMonth() + 1).toString().padStart(2, "0")}-${tmpDate.getDate().toString().padStart(2, "0")}`;
+
+    console.log(date, "formatted date:", formattedDate);
+
+    return formattedDate;
+  };
+
   const handleUpdateColumns = async () => {
     dispatch(toggleLoading());
+    console.log("Updating columns: ", tmpField);
     for (let i = 0; i < tmpField.columns.length; i++) {
       try {
         const response = await updateColumn(tmpField.columns[i]);
@@ -91,7 +102,11 @@ export default function EditColumn({
         ))}
       </div>
       <div className="d-flex justify-content-end mt-4 border-top pt-2">
-        <Button variant={"success"} onClick={handleUpdateColumns}>
+        <Button
+          variant={"success"}
+          onClick={handleUpdateColumns}
+          disabled={field.isClosed}
+        >
           Save
         </Button>
       </div>

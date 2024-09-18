@@ -5,8 +5,8 @@ export interface Customer {
     personOfContact: string;
     phone: string;
     state: string;
-    birthDate?: Date;
-    anniversary?: Date;
+    birthDate?: Date | string;
+    anniversary?: Date | string;
     address: string;
     residenceAddress: string;
     city: string;
