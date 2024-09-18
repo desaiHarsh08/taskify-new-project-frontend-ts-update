@@ -98,7 +98,10 @@ export default function CustomerRow({
           size="lg"
           heading={`Edit: ${customer.customerName}`}
         >
-          <EditCustomerForm customer={customer} />
+          <EditCustomerForm
+            customer={customer}
+            setOpenModal={setOpenEditModal}
+          />
         </Modal>
 
         <Button

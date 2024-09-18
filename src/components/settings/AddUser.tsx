@@ -7,7 +7,7 @@ import { addNewUser } from "@/services/auth-apis";
 import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 const departments = [
   "QUOTATION",

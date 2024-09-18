@@ -1,4 +1,4 @@
-import { selectLoading, toggleLoading } from "@/app/slices/loadingSlice";
+import { toggleLoading } from "@/app/slices/loadingSlice";
 import { selectRefetch } from "@/app/slices/refetchSlice";
 import AddFunction from "@/components/task/AddFunction";
 import FunctionsList from "@/components/task/FunctionsList";
@@ -14,7 +14,6 @@ export default function Task() {
 
   const { taskId } = useParams();
 
-  const loadingVisibility = useSelector(selectLoading);
   const refectFlag = useSelector(selectRefetch);
 
   //   console.log("taskId:", taskId);

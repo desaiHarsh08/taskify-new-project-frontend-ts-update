@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
@@ -28,7 +29,6 @@ type AddFunctionProps = {
 export default function AddFunction({
   task,
   setTask,
-  getTask,
 }: AddFunctionProps) {
   const { user } = useAuth();
 

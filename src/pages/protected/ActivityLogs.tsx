@@ -1,6 +1,4 @@
 import ActivityList from "@/components/activity-logs/ActivityList";
-import { fetchTaskifyLogsByMonthAndYear } from "@/services/taskify-timeline-apis";
-import { useState } from "react";
 
 export default function ActivityLogs() {
     

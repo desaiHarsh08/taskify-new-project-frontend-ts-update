@@ -1,6 +1,5 @@
 import DepartmentType from "@/lib/department-type";
 import Button from "../ui/Button";
-import { useEffect } from "react";
 
 type SelectDepartmentProps = {
   selectedDepartment: DepartmentType;

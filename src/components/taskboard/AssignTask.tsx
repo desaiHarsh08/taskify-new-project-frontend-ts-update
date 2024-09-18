@@ -2,7 +2,7 @@ import User, { Role } from "@/lib/user";
 import Button from "../ui/Button";
 import AssignUserTaskCard from "./AssignUserTaskCard";
 import React, { useEffect, useState } from "react";
-import { fetchAllUsers, fetchUsersByDepartment } from "@/services/auth-apis";
+import { fetchAllUsers } from "@/services/auth-apis";
 import Task from "@/lib/task";
 import DepartmentType from "@/lib/department-type";
 import { useSelector } from "react-redux";

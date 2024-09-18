@@ -28,7 +28,6 @@ export default function InputFunctionDetails({
   setNewFunction,
   handleModalNavigate,
   onAddFunction,
-  setSelectedFunctionPrototype,
   handleFunctionDefaultSet,
 }: InputFunctionDetailsProps) {
   const [selectedFieldPrototype, setSelectedFieldPrototype] =
@@ -133,7 +132,7 @@ export default function InputFunctionDetails({
               className="form-control"
               name="dueDate"
               id="dueDate"
-              value={newFunction.dueDate && (newFunction.dueDate as string)}
+              value={newFunction.dueDate && dateFormat(newFunction.dueDate as string)}
               onChange={handleFunctionChange}
             />
           </div>

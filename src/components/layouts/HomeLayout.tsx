@@ -4,7 +4,6 @@ import Navbar from "@/components/global/Navbar";
 import NavigationLinks from "@/components/global/NavigationLinks";
 import { AuthProvider } from "@/providers/AuthProvider";
 
-import Loading from "../global/Loading";
 import { useSelector } from "react-redux";
 import { selectLoading } from "@/app/slices/loadingSlice";
 

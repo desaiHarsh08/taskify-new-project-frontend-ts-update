@@ -3,7 +3,6 @@ import FunctionCard from "./FunctionCard";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectRefetch } from "@/app/slices/refetchSlice";
-import { fetchFunctionById } from "@/services/function-apis";
 
 type FunctionsListProps = {
   task: Task;
