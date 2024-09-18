@@ -216,6 +216,9 @@ export default function CreateNewTask({
         heading="Select Department"
       >
         <SelectDepartment
+          taskPrototype={taskPrototypes.find(
+            (ele) => ele.id === newTask.taskPrototypeId
+          )}
           onNavigateBackModal={() => handleModalNavigate("taskInfo")}
           onNavigateContinueModal={() => handleModalNavigate("assignTask")}
           selectedDepartment={selectedDepartment}

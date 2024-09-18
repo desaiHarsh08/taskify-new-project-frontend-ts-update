@@ -8,7 +8,7 @@ type SelectDepartmentProps = {
   onNavigateBackModal?: () => void; // Define the keys in the type
   onNavigateContinueModal: () => void; // Define the keys in the type
   backBtn?: boolean;
-  setSelectedFunctionPrototype: React.Dispatch<
+  setSelectedFunctionPrototype?: React.Dispatch<
     React.SetStateAction<FunctionPrototype | null>
   >;
   taskPrototype: TaskPrototype | null | undefined;
@@ -46,7 +46,7 @@ export default function SelectDepartment({
             const fnPrototypeByDept = taskPrototype?.functionPrototypes.filter(
               (ele) => ele.department === e.target.value
             );
-            if (fnPrototypeByDept) {
+            if (fnPrototypeByDept && setSelectedFunctionPrototype) {
               setSelectedFunctionPrototype(fnPrototypeByDept[0]);
             }
           }}

@@ -210,6 +210,7 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           heading="Select Department"
         >
           {taskPrototype && <SelectDepartment
+          
             backBtn={false}
             onNavigateContinueModal={() =>
               handleModalNavigate("selectFunction")
