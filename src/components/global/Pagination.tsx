@@ -20,7 +20,6 @@ export default function Pagination({
   totalPages,
   setPageData,
 }: PaginationProps) {
-  console.log("pagination", pageNumber, totalPages);
 
   return (
     <div className="d-flex gap-2">

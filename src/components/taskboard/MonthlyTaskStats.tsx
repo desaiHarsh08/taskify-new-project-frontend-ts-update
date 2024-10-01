@@ -18,8 +18,8 @@ export default function MonthlyTaskStats() {
 
   return (
     <div
-      className="d-flex justify-content-evenly border overflow-auto"
-      style={{ minWidth: "1464px" }}
+      className="d-flex justify-content-evenly border"
+    //   style={{ minWidth: "1464px" }}
     >
       <div className="w-100 border-end">
         <div className="pb-0 pt-2">

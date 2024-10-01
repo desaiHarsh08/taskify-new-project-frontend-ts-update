@@ -210,27 +210,29 @@ export default function TaskBoard() {
           <div className="overflow-y-auto">
             <MonthlyTaskStats />
           </div>
-          <div className="my-5 overflow-auto">
+          <div className="my-5">
             <h3>All Tasks</h3>
-            <ul
-              className="p-0 d-flex gap-3 border-bottom mt-3"
-              style={{ listStyle: "none", minWidth: "1464px" }}
-            >
-              {tabs.map((tab, index) => (
-                <li
-                  key={tab.tabLabel}
-                  onClick={() => handleTabChange(index)}
-                  style={{
-                    cursor: "pointer",
-                    fontSize: "15px",
-                    minWidth: "110px",
-                  }}
-                  className={`${tab.isSelected ? "border-bottom text-primary border-primary" : ""} pb-2 text-center`}
+            <div className="w-100 overflow-auto">
+                <ul
+                className="p-0 d-flex gap-3 border-bottom mt-3"
+                style={{ listStyle: "none", minWidth: "100%" }}
                 >
-                  {tab.tabLabel}
-                </li>
-              ))}
-            </ul>
+                {tabs.map((tab, index) => (
+                    <li
+                    key={tab.tabLabel}
+                    onClick={() => handleTabChange(index)}
+                    style={{
+                        cursor: "pointer",
+                        fontSize: "15px",
+                        minWidth: "110px",
+                    }}
+                    className={`${tab.isSelected ? "border-bottom text-primary border-primary" : ""} pb-2 text-center`}
+                    >
+                    {tab.tabLabel}
+                    </li>
+                ))}
+                </ul>
+            </div>
             <form
               className="d-flex align-items-center gap-2"
               onSubmit={handleSearchTask}
@@ -251,11 +253,13 @@ export default function TaskBoard() {
                 </Button>
               </div>
             </form>
+            <div className="w-100 overflow-auto">
             <TaskList
               tasks={allTasks}
               onSelectTask={() => {}}
               selectedTasks={[]}
             />
+            </div>
             <Pagination
               setPageData={setPageData}
               pageNumber={pageData.pageNumber}

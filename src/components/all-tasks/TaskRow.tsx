@@ -39,9 +39,9 @@ export default function TaskRow({
       }
     })();
 
-    console.log("task:", task)
+    // console.log("task:", task)
     const fnUnderProcess = task.functions?.find((fn) => fn.isClosed != true);
-    console.log(fnUnderProcess);
+    // console.log(fnUnderProcess);
     if (fnUnderProcess) {
         getDepartment(fnUnderProcess as TFunction);
     }
@@ -52,7 +52,6 @@ export default function TaskRow({
       const response = await fetchFunctionPrototypeById(
         fn.functionPrototypeId as number
       );
-      console.log("response for fnproto:", response);
       setDepartment(response.department);
     } catch (error) {
         console.log(error)

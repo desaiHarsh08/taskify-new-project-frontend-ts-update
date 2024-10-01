@@ -74,7 +74,6 @@ export default function CreateNewTask({
   useEffect(() => {
     fetchTaskPrototypes(1)
       .then((data) => {
-        console.log(data);
         setTaskPrototypes(data.content);
         setNewTask((prev) => ({
           ...prev,

@@ -46,7 +46,7 @@ export default function TaskList({
   return (
     <div
       id="task-table"
-      className="table my-3 h-75 w-100 overflow-x-auto"
+      className="table my-3 h-75 w-100 overflow-x-auto border"
     >
       <div
         className="d-flex w-100 border bg-light border-bottom-0"
@@ -58,7 +58,7 @@ export default function TaskList({
       >
         {tableColumns}
       </div>
-      <div className="overflow-y-scroll" style={{ height: "500px" }}>
+      <div className="overflow-y-scroll" style={{ maxHeight: "500px" }}>
         {tasks.map((task, taskIndex) => (
           <TaskRow
             key={`task-${taskIndex}`}
