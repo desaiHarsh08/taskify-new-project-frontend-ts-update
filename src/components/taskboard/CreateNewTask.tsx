@@ -33,7 +33,7 @@ export default function CreateNewTask({
   const { user } = useAuth();
 
   const [newTask, setNewTask] = useState<Task>({
-    taskPrototypeId: 1,
+    taskPrototypeId: 3,
     priorityType: "NORMAL",
     createdByUserId: user?.id,
     assignedToUserId: user?.id,

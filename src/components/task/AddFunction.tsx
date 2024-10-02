@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import SelectFunction from "./SelectFunction";
-import TaskPrototype, { FunctionPrototype } from "@/lib/task-prototype";
+import TaskPrototype, { ColumnPrototype, FieldPrototype, FunctionPrototype } from "@/lib/task-prototype";
 import AssignTask from "../taskboard/AssignTask";
 import User from "@/lib/user";
 import Task, { Field, TFunction } from "@/lib/task";
@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { toggleLoading } from "@/app/slices/loadingSlice";
 
 import { uploadFiles } from "@/services/column-apis";
+import { uploadFiles as uploadFnFiles } from "@/services/function-apis";
 import { toggleRefetch } from "@/app/slices/refetchSlice";
 import DepartmentType from "@/lib/department-type";
 import SelectDepartment from "../taskboard/SelectDepartment";
@@ -74,6 +75,9 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
       createdByUserId: user?.id,
       dueDate: new Date(),
       fields: [],
+      remarks: "",
+      fileDirectoryPath: [],
+      multipartFiles: [],
     };
 
     // Set the fields
@@ -99,6 +103,8 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
       tmpFields.push(field);
     }
     tmpNewFn.fields = [...tmpFields];
+
+    
 
     console.log("Default set newFn:", tmpNewFn);
     setNewFunction(tmpNewFn);
@@ -160,6 +166,16 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
           }
         }
       }
+
+      try {
+        const resFile = await uploadFnFiles(response, tmpNewFn.multipartFiles as File[]);
+        console.log(resFile)
+    } catch (error) {
+        // alert('Unable to upload the function files...!');
+        console.log(error);
+    }
+
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -189,6 +205,8 @@ export default function AddFunction({ task, setTask }: AddFunctionProps) {
     } catch (error) {
       console.log(error);
     }
+
+    
   };
 
   return (

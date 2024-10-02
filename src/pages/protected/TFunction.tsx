@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Field, TFunction as FnType } from "@/lib/task";
 import { FunctionPrototype } from "@/lib/task-prototype";
 import { createField } from "@/services/field-apis";
-import { doCloseFunction, fetchFunctionById } from "@/services/function-apis";
+import { doCloseFunction, fetchFile, fetchFunctionById, updateFunction, uploadFiles } from "@/services/function-apis";
 import { fetchFunctionPrototypeById } from "@/services/function-prototype-apis";
 import { getFormattedDate } from "@/utils/helpers";
 import { useEffect, useState } from "react";
@@ -69,6 +69,55 @@ export default function TFunction() {
       console.log(error);
     }
   };
+
+  const handleFileView = async (filePath: string) => {
+    try {
+      const response = await fetchFile(filePath);
+      const blob = new Blob([response], { type: response.type });
+      const url = window.URL.createObjectURL(blob);
+
+      // Open or download depending on the MIME type
+      if (blob.type.startsWith("image/") || blob.type === "application/pdf") {
+        // Open in a new tab for images and PDFs
+        window.open(url, "_blank");
+      } else {
+        // Download for other file types
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filePath.split("/").pop() as string; // Extract file name from the path
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      // Revoke the object URL after usage
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error fetching the file:", error);
+    }
+  };
+
+  const updateFn = async () => {
+    if (!user) {
+        return;
+    }
+    dispatch(toggleLoading());
+    try {
+        const resUpdateFn = await updateFunction(fn as FnType, user.id as number);
+        console.log("updated fn fields");
+        try {
+            const res = await uploadFiles(resUpdateFn, fn?.multipartFiles as File[]);
+            console.log("uploaded files");
+        } catch (error) {
+            console.log("unable to upload files");
+        }
+    } catch (error) {
+        console.log("unable to update fields");
+    } finally {
+        dispatch(toggleRefetch());
+        dispatch(toggleLoading());
+    }
+  }
 
   const handleCloseFn = async () => {
     console.log(user);
@@ -200,7 +249,7 @@ export default function TFunction() {
   );
 
   return (
-    <div className="px-3 py-3 h-100">
+    <div className="px-3 py-3 h-100 overflow-auto">
       {functionDetails}
       <div className="mb-3">
         <Button
@@ -255,8 +304,9 @@ export default function TFunction() {
           })}
         </div>
         <div
-          className="tbody border overflow-auto"
-          style={{ minWidth: "1116px", maxHeight: "450px" }}
+            id="function-field-row"
+          className="tbody border overflow-auto "
+          style={{ minWidth: "1116px", maxHeight: "500px" }}
         >
           {fnBkp &&
             fnBkp.fields.map((field, fieldIndex) => (
@@ -267,6 +317,55 @@ export default function TFunction() {
               />
             ))}
         </div>
+      </div>
+      <div className="my-5 border-top py-4">
+        <div className="">
+            <div className="mb-3">
+                <label htmlFor="remarks" className="mb-2">Remarks:</label>
+                <textarea name="remarks" id="remarks" className="form-control" value={fn?.remarks} onChange={(e) => setFn((prev) => ({...prev, remarks: e.target.value} as FnType))}>
+                </textarea>
+            </div>
+            <div className="mb-3">
+                <label htmlFor="multipartFiles" className="mb-2">Remarks:</label>
+                <input type="file" name="multipartFiles" id="multipartFiles" className="form-control" onChange={(e) => setFn((prev) => ({...prev, multipartFiles: e.target.files} as FnType))} />
+            </div>
+            <Button variant="danger" type="button" onClick={updateFn}>Upload</Button>
+        </div>
+            
+            {fn?.fileDirectoryPath &&
+            fn.fileDirectoryPath.map((filePath) => {
+                const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+              const parts = filePath.split(".");
+              const fileExtension = parts[parts.length - 1];
+              let fileLogo = "/file-logo-img.jpeg";
+              if (fileExtension.toLowerCase() === "xlsx") {
+                fileLogo = "/excel-logo-img.png";
+              } else if (fileExtension.toLowerCase() === "pdf") {
+                fileLogo = "/pdf-logo-img.png";
+              } else if (
+                fileExtension.toLowerCase() === "word" ||
+                fileExtension.toLowerCase() === "docx"
+              ) {
+                fileLogo = "/word-logo-img.avif";
+              }
+
+              return (
+                <div
+                  className="d-flex my-3"
+                  onClick={() => handleFileView(filePath)}
+                >
+                  <div className="p-2" style={{ cursor: "pointer" }}>
+                    <img
+                      src={fileLogo}
+                      alt=""
+                      width={70}
+                      style={{ border: "1px solid #bcbcbc" }}
+                    />
+                    <p>{fileName}</p>
+                  </div>
+                </div>
+              );
+            })}
       </div>
       <MyToast
         show={showToast}

@@ -27,6 +27,8 @@ export default function TaskRow({
 
   const [department, setDepartment] = useState("");
 
+  const [lastEdited, setLastEdited] = useState<Date | null>(null);
+
   useEffect(() => {
     (async () => {
       try {
@@ -46,6 +48,21 @@ export default function TaskRow({
         getDepartment(fnUnderProcess as TFunction);
     }
   }, [task.taskPrototypeId]);
+
+  useEffect(() => {
+    if (task && task.functions) {
+        let tmpDate = new Date();
+        for (let i = 0; i < task?.functions?.length; i++) {
+            for (let j = 0; j < task.functions[i].fields.length; j++) {
+                const fieldDate = new Date(task.functions[i].fields[j].lastEdited as Date);
+                if (fieldDate < tmpDate) {
+                    tmpDate = fieldDate;
+                }
+            }
+        }
+        setLastEdited(tmpDate);
+    }
+  }, [task])
 
   const getDepartment = async (fn: TFunction) => {
     try {
@@ -100,7 +117,7 @@ export default function TaskRow({
         {department}
       </p>
       <p className="border-end text-center" style={{ width: "11.25%" }}>
-        {getFormattedDate(task.createdDate as Date)}
+        {getFormattedDate(lastEdited as Date)}
       </p>
       <p className="border-end text-center" style={{ width: "11.25%" }}>
         {!task.isClosed ? (

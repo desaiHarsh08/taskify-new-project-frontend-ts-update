@@ -31,6 +31,11 @@ export const fetchMonthlyStats = async (): Promise<MonthlyStats> => {
     return response.data;
 }
 
+export const fetchTasksByAbbreviationOrDate = async (page: number, abbreviation: string, date: string | Date): Promise<PageResponse<Task>> => {
+    const response = await API.get(`/api/tasks/abbreviation-date?page=${page}&abbreviation=${abbreviation}&date=${date}`);
+    return response.data;
+}
+
 export const fetchTaskById = async (taskId: number): Promise<Task> => {
     console.log("fetching taskId:", taskId);
     const response = await API.get(`/api/tasks/${taskId}`);

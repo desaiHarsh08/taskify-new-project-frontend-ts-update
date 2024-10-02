@@ -93,6 +93,7 @@ export default function ColumnCard({
 
           {column.fileDirectoryPaths &&
             column.fileDirectoryPaths.map((filePath) => {
+                const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
               const parts = filePath.split(".");
               const fileExtension = parts[parts.length - 1];
               let fileLogo = "/file-logo-img.jpeg";
@@ -119,6 +120,7 @@ export default function ColumnCard({
                       width={70}
                       style={{ border: "1px solid #bcbcbc" }}
                     />
+                    <p>{fileName}</p>
                   </div>
                 </div>
               );
@@ -155,6 +157,19 @@ export default function ColumnCard({
                 type="text"
                 className="form-control"
                 value={column.textValue as string}
+                onChange={(e) =>
+                  onColumnChange(columnPrototype, e.target.value)
+                }
+              />
+            )}
+
+
+{columnPrototype.columnType === "NUMBER" &&
+            !columnPrototype.largeText && (
+              <input
+                type="number"
+                className="form-control"
+                value={column.numberValue as number}
                 onChange={(e) =>
                   onColumnChange(columnPrototype, e.target.value)
                 }

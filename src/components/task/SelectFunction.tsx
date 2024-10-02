@@ -62,7 +62,7 @@ export default function SelectFunction({
             if (fnPrototype.department === selectedDepartment) {
               return (
                 <option key={fnPrototype.title} value={fnPrototype.title}>
-                  {fnPrototype.department.padEnd(10, " ")}
+                  [{fnPrototype.department.padEnd(10, " ")}]
                   <p> - </p>
                   {fnPrototype.title}
                 </option>

@@ -39,6 +39,9 @@ export interface TFunction {
     closedDate?: Date | null;
     isClosed?: boolean;
     fields: Field[];
+    remarks?: string;
+    fileDirectoryPath?: string[];
+    multipartFiles?: File[] | null
 }
 
 export default interface Task {

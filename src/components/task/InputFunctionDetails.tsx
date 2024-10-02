@@ -20,6 +20,7 @@ type InputFunctionDetailsProps = {
     React.SetStateAction<FunctionPrototype | null>
   >;
   handleFunctionDefaultSet: (fnPrototype: FunctionPrototype) => void;
+
 };
 
 export default function InputFunctionDetails({
@@ -44,7 +45,7 @@ export default function InputFunctionDetails({
     }
   }, [selectedFunctionPrototype]);
 
-  const handleFunctionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFunctionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNewFunction((prev) => {
       if (prev) {
         return {
@@ -52,8 +53,8 @@ export default function InputFunctionDetails({
           functionPrototypeId: prev?.functionPrototypeId,
           taskId: prev?.taskId ?? 0,
           department: prev?.department ?? "ACCOUNTS",
-          dueDate: e.target.value as unknown as Date,
-          createdByUserId: prev?.createdByUserId ?? 0,
+          [e.target.name]: e.target.value,
+          createdByUserId: prev?.createdByUserId ?? 0, 
           fields: [...prev.fields],
         };
       } else {
@@ -109,19 +110,32 @@ export default function InputFunctionDetails({
     return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+
+    if (files && files?.length > 0) {
+        const tmpFn = {...newFunction}
+        tmpFn.multipartFiles = Array.from(files);
+
+        setNewFunction(tmpFn);
+    }
+
+  }
+
   return (
     <div
       className="d-flex flex-column justify-content-between"
       style={{ height: "400px" }}
     >
       <div className="overflow-y-auto" style={{ height: "350px" }}>
-        <div className="border-bottom">
+        <div className="">
           <h5>Description</h5>
           <p>{selectedFunctionPrototype?.description}</p>
           <span className="badge text-bg-primary my-3">
             {selectedFunctionPrototype?.department}
           </span>
         </div>
+        
         <div className="my-3">
           <div className="mb-3">
             <label htmlFor="dueDate" className="form-label my-2">
@@ -190,6 +204,32 @@ export default function InputFunctionDetails({
                 )
               )}
           </div>
+        </div>
+        <div className="border-top mt-5 pt-3">
+            <p className="fw-bold fs-4 my-3">Optional Function fields</p>
+        <div className="mb-3">
+            <label htmlFor="remarks" className="form-label my-2">
+                Files
+            </label>
+            <input
+              className="form-control"
+              name="fileDirectoryPath"
+              onChange={handleFileChange}
+            type="file"
+            />
+            </div>
+            <div className="mb-3">
+            <label htmlFor="remarks" className="form-label my-2">
+                Remarks 
+            </label>
+            <textarea
+              className="form-control"
+              name="remarks"
+              onChange={handleFunctionChange}
+              rows={3}
+              value={newFunction.remarks}
+            ></textarea>
+            </div>
         </div>
       </div>
       <div className="border-top align-items-center d-flex justify-content-end gap-2 p-2">

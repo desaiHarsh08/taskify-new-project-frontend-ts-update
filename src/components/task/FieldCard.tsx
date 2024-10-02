@@ -116,7 +116,24 @@ export default function FieldCard({
                   )}
                 </>
               )}
-
+            {columnPrototype.columnType === "NUMBER" && (
+                <input
+                type="number"
+                className="form-control"
+                value={
+                  (newFunction.fields[fieldPrototypeIndex].columns[
+                    columnPrototypeIndex
+                  ]?.numberValue as number)
+                }
+                onChange={(e) =>
+                  onFieldChange(
+                    fieldPrototype,
+                    columnPrototype,
+                    e.target.value
+                  )
+                }
+              />
+            )}
               {columnPrototype.columnType === "BOOLEAN" && (
                 <div className="form-check form-switch">
                   <input

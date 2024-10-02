@@ -1,5 +1,6 @@
 import Task from "@/lib/task";
 import TaskRow from "./TaskRow";
+import { useEffect } from "react";
 
 type TaskListProps = {
   tasks: Task[];
@@ -25,6 +26,7 @@ export default function TaskList({
   selectedTasks,
   onSelectTask,
 }: TaskListProps) {
+
   const tableColumns = columns.map((column, index) => {
     let columnWidth = { width: "11.25%" };
     if (index === 0) {

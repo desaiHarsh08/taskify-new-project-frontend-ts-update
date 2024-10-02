@@ -12,6 +12,7 @@ import {
   fetchPendingTasks,
   fetchTaskByAbbreviation,
   fetchTaskByPriority,
+  fetchTasksByAbbreviationOrDate,
 } from "@/services/task-apis";
 // import TaskPrototype from "@/lib/task-prototype";
 import Button from "@/components/ui/Button";
@@ -42,6 +43,7 @@ export default function TaskBoard() {
     totalRecords: 0,
   });
   const [taskAbbreviation, setTaskAbbreviation] = useState("");
+  const [createdDate, setCreatedDate] = useState(`${new Date().getFullYear()}-${(new Date().getMonth() +  1).toString().padStart(2, '0')}-${(new Date().getDate()).toString().padStart(2, '0')}`);
   const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [tabs, setTabs] = useState([
     { tabLabel: "All Tasks", isSelected: false },
@@ -76,23 +78,45 @@ export default function TaskBoard() {
     try {
       const response = await fetchAllTasks(pageNumber);
       console.log(response);
-      setAllTasks(response.content);
+      handleOrderoByEdited(response.content);
       setPageData({
         pageNumber: pageNumber,
         pageSize: response.pageSize,
         totalPages: response.totalPages,
         totalRecords: response.totatRecords,
       });
+
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleOrderoByEdited = (tasks: Task[]) => {
+    let tmpTasks: Task[] = [...tasks];
+            let tmpDate = new Date();
+            for (let t = 0; t < tasks.length; t++) {
+                const task = tasks[t];
+                if (task && task.functions) {
+                    for (let i = 0; i < task?.functions?.length; i++) {
+                        for (let j = 0; j < task.functions[i].fields.length; j++) {
+                            const fieldDate = new Date(task.functions[i].fields[j].lastEdited as Date);
+                            if (fieldDate > tmpDate) {
+                                tmpDate = fieldDate;
+                                tmpTasks = [task, ...tmpTasks];
+                            }
+                        }
+                    }
+                }
+            }
+
+        setAllTasks(tasks);
+  }
+
   const getTasksByPriority = async (priority: string, page: number) => {
     try {
       const response = await fetchTaskByPriority(page, priority);
       console.log(response);
-      setAllTasks(response.content);
+      handleOrderoByEdited(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -108,7 +132,7 @@ export default function TaskBoard() {
     try {
       const response = await fetchPendingTasks(page);
       console.log(response);
-      setAllTasks(response.content);
+      handleOrderoByEdited(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -124,7 +148,7 @@ export default function TaskBoard() {
     try {
       const response = await fetchOverdueTasks(page);
       console.log(response);
-      setAllTasks(response.content);
+      handleOrderoByEdited(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -140,7 +164,7 @@ export default function TaskBoard() {
     try {
       const response = await fetchClosedTasks(page);
       console.log(response);
-      setAllTasks(response.content);
+      handleOrderoByEdited(response.content);
       setPageData({
         pageNumber: page,
         pageSize: response.pageSize,
@@ -188,8 +212,14 @@ export default function TaskBoard() {
   const handleSearchTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetchTaskByAbbreviation(taskAbbreviation);
-      setAllTasks([response]);
+      const response = await fetchTasksByAbbreviationOrDate(1, taskAbbreviation, createdDate);
+      setAllTasks(response.content);
+      setPageData({
+        pageNumber: 1,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalRecords: response.totatRecords,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -243,6 +273,15 @@ export default function TaskBoard() {
                   className="form-control"
                   value={taskAbbreviation}
                   onChange={(e) => setTaskAbbreviation(e.target.value)}
+                  placeholder="type task_id..."
+                />
+              </div>
+              <div className="my-3">
+                <input
+                  type="date"
+                  className="form-control"
+                  value={createdDate}
+                  onChange={(e) => setCreatedDate(e.target.value)}
                   placeholder="type task_id..."
                 />
               </div>

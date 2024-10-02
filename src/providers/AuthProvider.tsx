@@ -112,37 +112,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
   }, [accessToken, generateNewToken, logout, user]);
 
-  useEffect(() => {
-    if (accessToken && user) {
-        console.log("access-token in ws:", accessToken);
-      const client = new Client({
-        brokerURL: "ws://localhost:5003/ws/notifications",
-        connectHeaders: {
-            "email": user?.email || "",
-        },
-        onConnect: () => {
-          console.log("Connected to WebSocket");
-          client.subscribe("/topic/return-to", (message) => {
-            if (message.body) {
-              console.log(message.body);
-              // Handle the message as needed
-            }
-          });
-        },
-        onStompError: (frame) => {
-          console.error("Broker reported error: " + frame.headers["message"]);
-          console.error("Additional details: " + frame.body);
-        },
-      });
+//   useEffect(() => {
+//     if (accessToken && user) {
+//         console.log("access-token in ws:", accessToken);
+//       const client = new Client({
+//         brokerURL: "ws://localhost:5003/ws/notifications",
+//         connectHeaders: {
+//             "email": user?.email || "",
+//         },
+//         onConnect: () => {
+//           console.log("Connected to WebSocket");
+//           client.subscribe("/topic/return-to", (message) => {
+//             if (message.body) {
+//               console.log(message.body);
+//               // Handle the message as needed
+//             }
+//           });
+//         },
+//         onStompError: (frame) => {
+//           console.error("Broker reported error: " + frame.headers["message"]);
+//           console.error("Additional details: " + frame.body);
+//         },
+//       });
 
-      client.activate();
+//       client.activate();
 
-      // Cleanup on component unmount
-      return () => {
-        client.deactivate();
-      };
-    }
-  }, [accessToken]);
+//       // Cleanup on component unmount
+//       return () => {
+//         client.deactivate();
+//       };
+//     }
+//   }, [accessToken]);
 
   //   useEffect(() => {
   //     const ws = new WebSocket("ws://localhost:5003/ws/notifications"); // Replace with your WebSocket server URL

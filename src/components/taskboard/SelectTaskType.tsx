@@ -61,11 +61,13 @@ export default function SelectTaskType({
           }
           onChange={handleTaskTypeChange} // Handle changes
         >
-          {taskPrototypes.map((taskPrototype) => (
-            <option key={taskPrototype.id} value={taskPrototype.taskType}>
+          {taskPrototypes.map((taskPrototype) => {
+            if (taskPrototype.taskType !== "COMBINED_TASK") {
+                return <option key={taskPrototype.id} value={taskPrototype.taskType}>
               {taskPrototype.taskType}
             </option>
-          ))}
+            }
+          })}
         </select>
       </div>
       <div className="d-flex justify-content-end p-3">
