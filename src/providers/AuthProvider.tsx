@@ -8,7 +8,6 @@ import React, {
 import { API } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import User from "@/lib/user";
-import { Client } from "@stomp/stompjs";
 
 export interface AuthContextType {
   user: User | null;

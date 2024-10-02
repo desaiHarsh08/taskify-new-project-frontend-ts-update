@@ -1,6 +1,5 @@
 import Task from "@/lib/task";
 import TaskRow from "./TaskRow";
-import { useEffect } from "react";
 
 type TaskListProps = {
   tasks: Task[];

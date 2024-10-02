@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import SelectFunction from "./SelectFunction";
-import TaskPrototype, { ColumnPrototype, FieldPrototype, FunctionPrototype } from "@/lib/task-prototype";
+import TaskPrototype, { FunctionPrototype } from "@/lib/task-prototype";
 import AssignTask from "../taskboard/AssignTask";
 import User from "@/lib/user";
 import Task, { Field, TFunction } from "@/lib/task";

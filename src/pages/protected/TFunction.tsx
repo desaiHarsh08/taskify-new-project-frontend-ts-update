@@ -106,7 +106,7 @@ export default function TFunction() {
         const resUpdateFn = await updateFunction(fn as FnType, user.id as number);
         console.log("updated fn fields");
         try {
-            const res = await uploadFiles(resUpdateFn, fn?.multipartFiles as File[]);
+            await uploadFiles(resUpdateFn, fn?.multipartFiles as File[]);
             console.log("uploaded files");
         } catch (error) {
             console.log("unable to upload files");

@@ -10,7 +10,6 @@ import {
   fetchClosedTasks,
   fetchOverdueTasks,
   fetchPendingTasks,
-  fetchTaskByAbbreviation,
   fetchTaskByPriority,
   fetchTasksByAbbreviationOrDate,
 } from "@/services/task-apis";
